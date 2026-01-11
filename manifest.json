@@ -1,11 +1,17 @@
 {
   "manifest_version": 3,
   "name": "Phishing Detector",
-  "version": "1.0",
-  "description": "Detects potential phishing websites.",
+  "version": "2.0.0",
+  "description": "Advanced real-time phishing and scam detection with multi-layered analysis.",
   "permissions": [
     "tabs",
-    "activeTab"
+    "activeTab",
+    "storage",
+    "scripting",
+    "declarativeNetRequest"
+  ],
+  "host_permissions": [
+    "<all_urls>"
   ],
   "background": {
     "service_worker": "background.js"
@@ -25,8 +31,39 @@
   },
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["content.js"]
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "config.js",
+        "utils.js",
+        "cache-manager.js",
+        "phishing-detector.js",
+        "content.js"
+      ],
+      "css": [
+        "warning-overlay.css"
+      ],
+      "run_at": "document_end"
     }
-  ]
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "warning.html",
+        "warning-overlay.css",
+        "config.js",
+        "utils.js",
+        "cache-manager.js",
+        "phishing-detector.js"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  },
+  "minimum_chrome_version": "88"
 }

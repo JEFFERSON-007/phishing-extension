@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Warning - Phishing Detector</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .warning-container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .warning-header {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .warning-header.high {
+            background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%);
+        }
+
+        .warning-header.medium {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        #warningIcon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        #warningTitle {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        #warningSubtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .warning-content {
+            padding: 40px;
+        }
+
+        .url-display {
+            background: #f9fafb;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 32px;
+            border-left: 4px solid #dc2626;
+        }
+
+        .url-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        #urlText {
+            font-size: 14px;
+            color: #1f2937;
+            word-break: break-all;
+            font-family: 'Courier New', monospace;
+        }
+
+        .risk-score-section {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 16px;
+            position: relative;
+        }
+
+        .score-circle svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .score-value-display {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 700;
+            color: #dc2626;
+        }
+
+        .threats-section {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+
+        .threats-section h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 16px;
+        }
+
+        #threatsList {
+            list-style: none;
+            padding: 0;
+        }
+
+        .threat-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .threat-badge {
+            min-width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .security-tip {
+            background: rgba(59, 130, 246, 0.1);
+            border-left: 3px solid #3b82f6;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 32px;
+        }
+
+        .security-tip strong {
+            color: #1f2937;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        #tipText {
+            color: #4b5563;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .footer-text {
+            text-align: center;
+            color: #9ca3af;
+            font-size: 12px;
+            margin-top: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .warning-header {
+                padding: 24px;
+            }
+
+            #warningTitle {
+                font-size: 24px;
+            }
+
+            .warning-content {
+                padding: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="warning-container">
+        <div id="warningHeader" class="warning-header">
+            <div id="warningIcon">🛑</div>
+            <h1 id="warningTitle">Security Warning</h1>
+            <p id="warningSubtitle">This website may be dangerous</p>
+        </div>
+
+        <div class="warning-content">
+            <div class="url-display">
+                <div class="url-label">Blocked URL</div>
+                <div id="urlText">Loading...</div>
+            </div>
+
+            <div class="risk-score-section">
+                <div class="score-circle">
+                    <svg viewBox="0 0 100 100">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e5e7eb" stroke-width="8" />
+                        <circle id="scoreProgress" cx="50" cy="50" r="45" fill="none" stroke="#dc2626" stroke-width="8"
+                            stroke-dasharray="283" stroke-dashoffset="283" stroke-linecap="round"
+                            transform="rotate(-90 50 50)" />
+                    </svg>
+                    <div class="score-value-display">
+                        <span id="scoreValue">0</span>
+                        <small style="font-size: 16px; color: #9ca3af;">/100</small>
+                    </div>
+                </div>
+                <div style="font-weight: 600; color: #6b7280;">Risk Score</div>
+            </div>
+
+            <div class="threats-section">
+                <h3>⚠️ Detected Security Issues</h3>
+                <ul id="threatsList">
+                    <li class="threat-item">
+                        <div class="threat-badge">!</div>
+                        <span>Analyzing...</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="security-tip">
+                <strong>💡 Security Tip</strong>
+                <p id="tipText">When in doubt, navigate to websites directly by typing the known address into your
+                    browser, rather than clicking links.</p>
+            </div>
+
+            <div class="action-buttons">
+                <button id="goBackBtn" class="btn btn-primary">
+                    ← Go Back to Safety
+                </button>
+                <button id="proceedBtn" class="btn btn-secondary">
+                    I Understand the Risks
+                </button>
+            </div>
+
+            <div class="footer-text">
+                Protected by Phishing Detector Extension v2.0.0
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="utils.js"></script>
+    <script src="cache-manager.js"></script>
+    <script src="phishing-detector.js"></script>
+    <script src="warning.js"></script>
+</body>
+
+</html>

@@ -162,7 +162,7 @@ Found a bug or want to improve detection? Contributions are welcome!
 
 This project is provided as-is for educational and personal use.
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Designed to protect users from increasingly sophisticated phishing and scam attempts. Stay safe online! 🛡️
 

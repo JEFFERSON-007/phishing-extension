@@ -63,6 +63,9 @@
     const context = extractDOMContext();
     if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {
       chrome.runtime.sendMessage({ action: 'ANALYZE_PAGE', context }, (response) => {
+        if (chrome.runtime.lastError) {
+          return; // Ignore disconnect error silently
+        }
         if (response && response.success && response.result) {
           const result = response.result;
           if (result.riskScore >= 60) {
@@ -71,6 +74,17 @@
         }
       });
     }
+  }
+
+  // Listen for rescan trigger messages from popup or background
+  if (typeof chrome !== 'undefined' && chrome.runtime?.onMessage) {
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+      if (request.action === 'TRIGGER_DOM_SCAN') {
+        triggerPageAnalysis();
+        sendResponse({ success: true });
+        return true;
+      }
+    });
   }
 
   /**

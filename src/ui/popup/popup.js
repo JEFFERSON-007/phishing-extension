@@ -1,6 +1,6 @@
 /**
  * Popup Interface Logic
- * Fetches current active tab security status and updates popup dashboard elements.
+ * Fetches current active tab security status and updates popup dashboard elements safely.
  * @module popup
  */
 
@@ -15,16 +15,22 @@ document.addEventListener('DOMContentLoaded', async () => {
   let currentTabId = null;
 
   if (typeof chrome !== 'undefined' && chrome.tabs) {
-    const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-    if (tabs[0]) {
-      currentTabId = tabs[0].id;
-      fetchSecurityStatus(currentTabId);
-    }
+    try {
+      const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (tabs[0] && tabs[0].id) {
+        currentTabId = tabs[0].id;
+        fetchSecurityStatus(currentTabId);
+      }
+    } catch {}
   }
 
   btnRescan?.addEventListener('click', () => {
-    if (currentTabId && chrome.tabs) {
-      chrome.tabs.sendMessage(currentTabId, { action: 'TRIGGER_DOM_SCAN' });
+    if (currentTabId && typeof chrome !== 'undefined' && chrome.tabs) {
+      chrome.tabs.sendMessage(currentTabId, { action: 'TRIGGER_DOM_SCAN' }, () => {
+        if (chrome.runtime.lastError) {
+          // Ignore connection errors on unscriptable tabs (e.g. chrome:// extensions)
+        }
+      });
       statusTitle.textContent = 'Re-scanning...';
       setTimeout(() => fetchSecurityStatus(currentTabId), 800);
     }
@@ -40,14 +46,24 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (typeof chrome === 'undefined' || !chrome.runtime) return;
 
     chrome.runtime.sendMessage({ action: 'GET_TAB_SECURITY_STATUS', tabId }, (response) => {
+      if (chrome.runtime.lastError) {
+        // Silently handle disconnected background worker or non-web tabs
+        renderDefaultSafeState();
+        return;
+      }
       if (response && response.result) {
         renderStatus(response.result);
       } else {
-        scoreNum.textContent = '0';
-        statusTitle.textContent = 'Site Safe';
-        gaugeCircle.style.borderColor = '#22c55e';
+        renderDefaultSafeState();
       }
     });
+  }
+
+  function renderDefaultSafeState() {
+    scoreNum.textContent = '0';
+    statusTitle.textContent = 'SAFE';
+    gaugeCircle.style.borderColor = '#22c55e';
+    findingsList.innerHTML = '<div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>';
   }
 
   function renderStatus(result) {
@@ -65,7 +81,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (result.reasons && result.reasons.length > 0) {
       findingsList.innerHTML = result.reasons.map(r => `<div class="finding-item">• ${r}</div>`).join('');
     } else {
-      findingsList.innerHTML = '<div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>';
+      renderDefaultSafeState();
     }
   }
 });

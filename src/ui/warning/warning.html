@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Security Alert — Access Blocked</title>
+  <link rel="stylesheet" href="warning.css">
+</head>
+<body>
+  <div class="warning-wrapper">
+    <div class="card">
+      <div class="header">
+        <span class="icon">🛑</span>
+        <h1>Phishing & Scam Threat Blocked</h1>
+        <p class="subtitle">Access to this page was intercepted by Phishing Detector to protect your credentials and data.</p>
+      </div>
+
+      <div class="score-banner">
+        <div class="score-box">
+          <span class="score-val" id="score-val">0</span>
+          <span class="score-max">/100</span>
+        </div>
+        <div class="threat-meta">
+          <div class="classification" id="classification">CRITICAL THREAT</div>
+          <div class="target-url" id="target-url">http://example.com</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Why Was This Page Blocked?</h2>
+        <div class="reasons-list" id="reasons-list">
+          <div class="reason-item">• High-risk phishing threat detected.</div>
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Educational Security Advice</h2>
+        <div class="edu-box">
+          <p>Phishing sites frequently disguise themselves as popular banks, social media platforms, or email providers to steal passwords and credit card numbers.</p>
+          <ul>
+            <li>Check the address bar carefully for lookalike letters (e.g. <code>rn</code> vs <code>m</code> or Cyrillic characters).</li>
+            <li>Never enter passwords on non-HTTPS or raw IP address links.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-back" id="btn-back">Go Back to Safety</button>
+        <button class="btn-export" id="btn-export">Export Diagnostic JSON</button>
+        <button class="btn-proceed" id="btn-proceed">Proceed Anyway (Unsafe)</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="warning.js"></script>
+</body>
+</html>

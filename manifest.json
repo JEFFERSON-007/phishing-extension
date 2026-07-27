@@ -14,10 +14,11 @@
     "<all_urls>"
   ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "src/background/service-worker.js",
+    "type": "module"
   },
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "src/ui/popup/popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -35,14 +36,7 @@
         "<all_urls>"
       ],
       "js": [
-        "config.js",
-        "utils.js",
-        "cache-manager.js",
-        "phishing-detector.js",
-        "content.js"
-      ],
-      "css": [
-        "warning-overlay.css"
+        "src/content/content-script.js"
       ],
       "run_at": "document_end"
     }
@@ -50,12 +44,12 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "warning.html",
-        "warning-overlay.css",
-        "config.js",
-        "utils.js",
-        "cache-manager.js",
-        "phishing-detector.js"
+        "src/ui/warning/warning.html",
+        "src/ui/warning/warning.css",
+        "src/ui/warning/warning.js",
+        "src/ui/dashboard/dashboard.html",
+        "src/ui/dashboard/dashboard.css",
+        "src/ui/dashboard/dashboard.js"
       ],
       "matches": [
         "<all_urls>"

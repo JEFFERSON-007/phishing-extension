@@ -1,0 +1,177 @@
+:root {
+  --bg-main: #0f172a;
+  --card-bg: #1e293b;
+  --border: #334155;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --primary: #3b82f6;
+  --safe: #22c55e;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 360px;
+  background-color: var(--bg-main);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.popup-card {
+  padding: 1.25rem;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shield-icon {
+  font-size: 1.5rem;
+}
+
+.brand-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.version-badge {
+  background: #334155;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+}
+
+.score-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+
+.gauge-circle {
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  border: 6px solid var(--safe);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  transition: border-color 0.3s ease;
+}
+
+.score-number {
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.score-label {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+}
+
+.status-title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.breakdown-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.breakdown-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  padding: 0.6rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.item-label {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+.item-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--safe);
+}
+
+.findings-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.findings-header {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.findings-list {
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 0.8rem;
+}
+
+.finding-empty {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.finding-item {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid #334155;
+  color: var(--text);
+}
+
+.footer-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+button {
+  flex: 1;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.btn-rescan {
+  background: var(--primary);
+  color: white;
+}
+
+.btn-dashboard {
+  background: var(--card-bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+}

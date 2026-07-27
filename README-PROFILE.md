@@ -90,42 +90,51 @@ I'm a passionate **Cybersecurity Engineer and Software Developer** with a keen i
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=JEFFERSON-007&theme=tokyonight&hide_border=true" alt="GitHub Streak" />
 </div>
 
-<div align="center">
-  <img src="https://github-readme-activity-graph.vercel.app/graph?username=JEFFERSON-007&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
-</div>
+
 
 ---
 
-## 🏆 Achievements & Trophies
 
-<div align="center">
-  
-  ### GitHub Trophies
-  <img src="https://github-profile-trophy.vercel.app/?username=JEFFERSON-007&theme=tokyonight&no-frame=true&no-bg=true&margin-w=15&margin-h=15&column=7" alt="trophies" />
-  
-  <br/>
-  
-  ### Detailed Achievement Ranks
-  <img src="https://github-profile-trophy.vercel.app/?username=JEFFERSON-007&theme=tokyonight&rank=SECRET,SSS,SS,S,AAA,AA,A&no-frame=false&no-bg=false&margin-w=10&margin-h=10&column=4" alt="detailed trophies" />
-  
-</div>
+
+## 📰 Latest Security News
+
+<!-- SECURITY_NEWS:START -->
+<!-- SECURITY_NEWS:END -->
 
 ---
 
 ## 💡 What I'm Working On
 
-```javascript
-const jefferson = {
-    currentFocus: [
-        "Enhancing cybersecurity tools with advanced ML algorithms",
-        "Building scalable mobile payment solutions",
-        "Creating professional web applications with stunning UX"
-    ],
-    learningNext: ["React Native", "Kotlin", "Cloud Architecture"],
-    askMeAbout: ["Android", "Web Development", "Security", "UI/UX"],
-    funFact: "I love turning complex security problems into simple solutions! 🔐"
-};
-```
+- 🔐 **Enhancing Cybersecurity Tools**: Developing advanced Machine Learning algorithms for threat detection.
+- 📱 **Mobile Payment Solutions**: Building scalable, offline-capable payment gateways for emerging markets.
+- 🌐 **Web Applications**: Creating professional, high-performance web apps with stunning UI/UX keying on "Glassmorphism" and modern aesthetics.
+- 🧠 **Learning**: Currently diving deep into **React Native**, **Kotlin**, and **Cloud Architecture**.
+
+> **Fun Fact**: I love turning complex security problems into simple, elegant solutions!
+
+---
+
+---
+
+## 📅 Contribution Analytics
+
+<div align="center">
+  
+  <img src="https://github.com/JEFFERSON-007/JEFFERSON-007/raw/main/profile-3d-contrib/profile-night-green.svg" alt="3D Contribution Graph" />
+  
+  <br/><br/>
+  
+  <img src="https://github-readme-activity-graph.vercel.app/graph?username=JEFFERSON-007&theme=tokyo-night&hide_border=true&area=true" alt="Contribution Graph" />
+
+</div>
+
+---
+
+## 🐍 Contribution Graph
+
+<div align="center">
+  <img src="https://raw.githubusercontent.com/JEFFERSON-007/JEFFERSON-007/output/github-contribution-grid-snake.svg" alt="snake prediction" />
+</div>
 
 ---
 
@@ -133,10 +142,18 @@ const jefferson = {
 
 <div align="center">
   
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/JEFFERSON-007)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/jefferson-007)
-[![Twitter](https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white)](https://twitter.com/jefferson_007)
-[![Email](https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white)](mailto:your.email@example.com)
+<a href="https://github.com/JEFFERSON-007">
+  <img src="https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white" alt="GitHub" />
+</a>
+<a href="https://linkedin.com/in/jefferson-007">
+  <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+</a>
+<a href="https://twitter.com/jefferson_007">
+  <img src="https://img.shields.io/badge/Twitter-1DA1F2?style=for-the-badge&logo=twitter&logoColor=white" alt="Twitter" />
+</a>
+<a href="mailto:your.email@example.com">
+  <img src="https://img.shields.io/badge/Email-D14836?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+</a>
 
 </div>
 

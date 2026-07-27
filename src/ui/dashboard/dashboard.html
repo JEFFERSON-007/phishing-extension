@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise Security Dashboard — Phishing Detector</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <div class="app-layout">
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="icon">🛡️</span>
+        <span class="title">Phishing Detector</span>
+      </div>
+
+      <nav class="menu">
+        <a href="#overview" class="active">Overview</a>
+        <a href="#rules">Rule Editor</a>
+        <a href="#performance">Performance Metrics</a>
+        <a href="#settings">Settings</a>
+      </nav>
+    </aside>
+
+    <main class="content">
+      <header class="top-bar">
+        <h1>Enterprise Security Platform</h1>
+        <div class="status-indicator">● Offline Mode Active (Zero Telemetry)</div>
+      </header>
+
+      <section class="metrics-grid">
+        <div class="metric-card">
+          <span class="label">Sites Scanned</span>
+          <span class="val" id="stat-scanned">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Threats Neutralized</span>
+          <span class="val" id="stat-blocked">0</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Active Detectors</span>
+          <span class="val">9 / 9</span>
+        </div>
+        <div class="metric-card">
+          <span class="label">Avg Scan Latency</span>
+          <span class="val">&lt; 15 ms</span>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2>Registered Detector Plugins</h2>
+        <table class="detector-table">
+          <thead>
+            <tr>
+              <th>Detector Name</th>
+              <th>Priority</th>
+              <th>Version</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>URLDetector</td><td>1000</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>ReputationEngine</td><td>950</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>FormDetector</td><td>900</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>CertificateAnalyzer</td><td>850</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>BrandImpersonationDetector</td><td>820</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>DOMDetector</td><td>800</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>BehaviorDetector</td><td>700</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>NetworkAnalyzer</td><td>650</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+            <tr><td>DomainIntelligence</td><td>600</td><td>2.0.0</td><td><span class="badge-active">Active</span></td></tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phishing Detector Security Control</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-card">
+    <div class="header">
+      <div class="brand">
+        <span class="shield-icon">🛡️</span>
+        <span class="brand-title">Phishing Detector</span>
+      </div>
+      <span class="version-badge">v2.0.0</span>
+    </div>
+
+    <div class="score-section">
+      <div class="gauge-circle" id="gauge-circle">
+        <span class="score-number" id="score-number">--</span>
+        <span class="score-label">RISK SCORE</span>
+      </div>
+      <div class="status-title" id="status-title">Analyzing...</div>
+    </div>
+
+    <div class="breakdown-grid">
+      <div class="breakdown-item">
+        <span class="item-label">URL Threat</span>
+        <span class="item-value" id="url-status">Safe</span>
+      </div>
+      <div class="breakdown-item">
+        <span class="item-label">Form Harvest</span>
+        <span class="item-value" id="form-status">Safe</span>
+      </div>
+      <div class="breakdown-item">
+        <span class="item-label">DOM Structure</span>
+        <span class="item-value" id="dom-status">Safe</span>
+      </div>
+      <div class="breakdown-item">
+        <span class="item-label">Behavior</span>
+        <span class="item-value" id="behavior-status">Safe</span>
+      </div>
+    </div>
+
+    <div class="findings-box" id="findings-box">
+      <div class="findings-header">Threat Analysis</div>
+      <div class="findings-list" id="findings-list">
+        <div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>
+      </div>
+    </div>
+
+    <div class="footer-actions">
+      <button class="btn-rescan" id="btn-rescan">Re-Scan Page</button>
+      <button class="btn-dashboard" id="btn-dashboard">Open Dashboard</button>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

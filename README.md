@@ -1,171 +1,135 @@
-# 🛡️ Phishing Detector Browser Extension
+# 🛡️ Phishing Detector — Enterprise Hybrid Browser Security Platform
 
-A professional-grade browser extension that provides **real-time phishing and scam detection** using advanced multi-layered analysis.
+A modular, enterprise-grade, offline-first browser security platform providing **real-time phishing, scam, and threat detection** using multi-layered heuristic analysis, a dynamic plugin registry, weighted risk fusion, explainable threat reasoning, and pluggable ML/OCR/Visual adapters.
 
-## ✨ Features
-
-### 🔍 Multi-Layered Detection
-- **Advanced URL Analysis**: Detects suspicious domains, typosquatting with keyboard proximity attacks (rn→m), character substitutions (0→o, 1→l), homograph attacks, and malicious TLDs
-- **Content Scanning**: Identifies urgency tactics, misleading links, hidden iframes, and obfuscated scripts
-- **Intelligent Form Analysis**: Monitors credential harvesting with smart detection that reduces false positives on legitimate HTTPS sites
-- **Behavioral Analysis**: Catches auto-submit forms, popup spam, and clipboard manipulation
-
-### ⚡ Real-Time Protection
-- **Live Monitoring**: Uses debounced MutationObserver for efficient dynamic page change detection
-- **Anti-Bypass Protection**: Warning overlays use Shadow DOM to prevent tampering by malicious pages
-- **Instant Warnings**: Full-page overlays for high-risk sites with detailed threat information and security tips
-- **Risk Scoring**: 0-100 risk assessment with 5 threat levels (Safe, Low, Medium, High, Critical)
-- **Smart Form Protection**: Alerts before submitting credentials to suspicious sites
-
-### 🎨 Modern Interface
-- **Visual Risk Indicator**: Color-coded badge shows threat level at a glance
-- **Enhanced Popup**: Risk scores, categorized threats (URL, Form, Content, Behavior), and protection statistics
-- **Animated Warnings**: Professional overlays with priority indicators and educational security tips
-- **Statistics Tracking**: Monitor sites checked and threats blocked
-- **Session Memory**: Dismissed warnings are remembered to avoid repeated interruptions
-
-## 🚀 Installation
-
-### Chrome / Edge / Brave
-1. Download or clone this repository
-2. Open Chrome and navigate to `chrome://extensions/`
-3. Enable "Developer mode" (toggle in top-right)
-4. Click "Load unpacked"
-5. Select the extension folder
-6. The Phishing Detector icon will appear in your toolbar!
-
-### Firefox
-1. Download or clone this repository
-2. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`
-3. Click "Load Temporary Add-on"
-4. Select the `manifest.json` file from the extension folder
-5. The extension is now active!
-
-## 🔒 How It Works
-
-### Detection Engine
-The extension uses a sophisticated **multi-layered analysis system**:
-
-1. **URL Analysis** (40 points max)
-   - Checks for non-HTTPS on sensitive pages
-   - Detects suspicious TLDs (.tk, .ml, .xyz, etc.)
-   - Identifies IP addresses instead of domain names
-   - Catches homograph attacks (lookalike characters)
-   - **NEW**: Advanced typosquatting with keyboard proximity detection (e.g., 'arnaz0n.com')
-   - **NEW**: Character substitution detection (0→o, 1→l, @→a)
-   - **NEW**: Doubled character detection (gooogle.com)
-
-2. **Content Analysis** (30 points max)
-   - Scans for urgency language ("act now", "limited time")
-   - Detects misleading links
-   - Finds hidden iframes
-   - Identifies obfuscated JavaScript
-
-3. **Form Analysis** (35 points max)
-   - Monitors password fields on non-HTTPS pages
-   - Detects forms submitting to external domains
-   - Flags credit card and SSN requests
-   - **NEW**: Smart scoring - reduced penalties for legitimate HTTPS login forms on known domains
-
-4. **Behavioral Analysis** (20 points max)
-   - Catches auto-submit forms
-   - Detects popup spam
-   - Identifies clipboard manipulation
-
-### Risk Levels
-- **Safe** (0-19): No significant threats detected
-- **Low** (20-39): Minor concerns, proceed with caution
-- **Medium** (40-59): Multiple suspicious indicators
-- **High** (60-79): Strong phishing indicators
-- **Critical** (80-100): Extremely dangerous, leave immediately
-
-## 📊 What Gets Detected
-
-### ✅ Phishing Attempts
-- Fake login pages for banks, social media, email
-- Typosquatted domains (e.g., paypa1.com instead of paypal.com)
-- Homograph attacks using lookalike characters
-- Credential harvesting forms
-
-### ✅ Scam Indicators
-- Urgency tactics ("act now or lose access")
-- Prize/lottery scams
-- Fake security alerts
-- Suspicious payment requests
-
-### ✅ Technical Threats
-- Forms on non-HTTPS pages requesting passwords
-- Hidden iframes for tracking
-- Obfuscated malicious scripts
-- External form submissions
-
-## 🎯 Usage
-
-### Automatic Protection
-Simply browse the web normally. The extension works automatically:
-- ✅ Green badge = Site is safe
-- 🔵 Blue badge = Low risk
-- 🟡 Yellow badge = Medium risk
-- 🟠 Orange badge = High risk
-- 🔴 Red badge = Critical threat
-
-### Viewing Details
-Click the extension icon to see:
-- Current site's risk score
-- Specific threats detected
-- Total sites checked
-- Threats blocked
-
-### Warning Overlays
-When visiting dangerous sites, you'll see a full-page warning with:
-- Risk level and score
-- List of detected threats
-- Options to go back or proceed (at your own risk)
-
-## 🔐 Privacy
-
-This extension:
-- ✅ **Does NOT collect or transmit any data**
-- ✅ **All analysis happens locally in your browser**
-- ✅ **No external servers or APIs used**
-- ✅ **No tracking or analytics**
-- ✅ **Open source - review the code yourself**
-
-## 🛠️ Technical Details
-
-**Built with:**
-- Manifest V3 (latest Chrome extension standard)
-- Vanilla JavaScript (no dependencies)
-- Modern CSS with animations
-- Real-time DOM monitoring (MutationObserver)
-
-**Compatible with:**
-- Google Chrome (v88+)
-- Microsoft Edge (v88+)
-- Brave Browser
-- Mozilla Firefox (v109+)
-
-## ⚠️ Limitations
-
-- Detection is based on patterns and heuristics, not perfect
-- May show false positives on legitimate sites with unusual patterns (we've minimized these with smart scoring)
-- Cannot detect all sophisticated phishing attempts
-- Works best with common phishing techniques
-
-**Always use common sense and verify websites independently!**
-
-## 🤝 Contributing
-
-Found a bug or want to improve detection? Contributions are welcome!
-
-## 📝 License
-
-This project is provided as-is for educational and personal use.
-
-## 🙏 Acknowledgments
-
-Designed to protect users from increasingly sophisticated phishing and scam attempts. Stay safe online! 🛡️
+[![Manifest V3](https://img.shields.io/badge/Manifest-V3-blue.svg)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![Privacy First](https://img.shields.io/badge/Privacy-100%25%20Offline-green.svg)](#-privacy--zero-telemetry)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 ---
 
-**Made with ❤️ for a safer internet**
+## ✨ Features & Capabilities
+
+### 🔍 Specialized Security Detectors (`src/detectors/`)
+- **URL Analysis**: Unicode normalization (NFC/NFD), Punycode decoding (`xn--`), homograph lookalikes, Shannon entropy calculation, typosquatting with keyboard proximity matrix, character substitutions (`0`→`o`, `1`→`l`, `@`→`a`), raw IP hostnames, non-standard ports, tracking parameters, data/blob URLs, and high-risk TLDs (`.tk`, `.xyz`, `.top`, etc.).
+- **Form Protection**: Detects credential harvesting, OTP inputs, banking forms, credit card requests, Social Security Numbers (SSN), Government IDs, crypto wallet seed phrases, hidden off-screen inputs, and autofill exploitation vectors.
+- **DOM & Script Scanning**: Incremental TreeWalker DOM scanner detecting hidden zero-pixel IFrames, canvas tricks, script obfuscation (`eval()`, `unescape()`, hex encoding), misleading display link texts, and fake fullscreen clickjacking masks.
+- **Behavioral Monitoring**: Tracks unauthorized clipboard read/writes, right-click context menu restrictions, popup window spam, auto-submitting forms, and sensitive API permissions (WebUSB, Bluetooth, WebRTC).
+- **SSL/TLS Transport Security**: Verifies scheme integrity, insecure HTTP credentials, and offline transport state.
+- **Brand Impersonation**: Rules-based title & domain spoofing checks using Levenshtein distance against global brand target lists (Google, PayPal, Chase, Apple, Amazon, Microsoft, Meta).
+- **Network Inspector**: Detects mixed content assets, insecure WebSockets (`ws://` on HTTPS origins), and cross-origin resource leakage.
+- **Reputation Engine**: Offline-first reputation lookup with pluggable interfaces for optional cloud databases (Safe Browsing, VirusTotal, PhishTank; disabled by default).
+
+### ⚡ Central Detection Engine & Risk Fusion (`src/core/`)
+- **Plugin Registry (`DetectorInterface`)**: Modular architecture allowing new detector plugins to be registered, prioritized, and executed dynamically.
+- **Risk Fusion Engine**: Combines detector outputs using confidence weighting, priority multipliers, and severity caps rather than simple linear addition.
+- **Explainable AI Engine**: Generates evidence-backed, human-readable threat reasons mapped directly to detector findings without AI hallucinations.
+- **Enterprise Policy Engine**: Evaluates domain whitelists, blacklists, temporary session overrides, and custom enterprise rules.
+
+### 🔌 ML, Visual & OCR Adapters (`src/adapters/`)
+- **Zero ML Dependencies**: The platform ships 100% offline with zero machine learning dependencies, zero weights, and zero online calls by default.
+- **Predefined Extension Adapters**: Clean interface contracts (`MLAdapter`, `VisualAdapter`, `OCRAdapter`) allow custom TensorFlow.js, ONNX Runtime Web, OpenCV, or Tesseract models to be plugged in seamlessly.
+
+---
+
+## 🏗️ Architecture & Project Layout
+
+```
+Phishing Extension/
+├── manifest.json              # Chrome Manifest V3 configuration
+├── README.md                  # Main platform documentation
+├── HOW-IT-WORKS.md            # Detailed protection flow breakdown
+├── icons/                     # Platform visual assets
+└── src/
+    ├── core/
+    │   ├── engine/            # Central DetectionEngine orchestrator
+    │   ├── fusion/            # Weighted RiskFusionEngine
+    │   ├── explainable/       # ExplainableAIEngine (Threat explanations)
+    │   └── policy/            # EnterprisePolicyEngine (Whitelists & Overrides)
+    ├── detectors/             # Modular Security Detectors
+    │   ├── url/               # URLDetector
+    │   ├── form/              # FormDetector
+    │   ├── dom/               # DOMDetector
+    │   ├── behavior/          # BehaviorDetector
+    │   ├── certificate/       # CertificateAnalyzer
+    │   ├── dns/               # DomainIntelligence
+    │   ├── brand/             # BrandImpersonationDetector
+    │   ├── network/           # NetworkAnalyzer
+    │   └── reputation/        # ReputationEngine
+    ├── adapters/              # Future Extensible Adapters
+    │   ├── ml/                # MLAdapter stub (TensorFlow/ONNX contract)
+    │   ├── visual/            # VisualAdapter stub (pHash/Canvas contract)
+    │   └── ocr/               # OCRAdapter stub (Text recognition contract)
+    ├── plugins/               # DetectorInterface & PluginRegistry
+    ├── cache/                 # MultiLayerCache (Bounded LRU with TTL)
+    ├── utils/                 # DOMSanitizer, EntropyUtils, PunycodeUtils, CryptoUtils, Logger
+    ├── storage/               # ChromeStorageAdapter (Local storage wrapper)
+    ├── background/            # Service Worker (Pre-nav interceptor & badge UI)
+    ├── content/               # Content script (DOM observer & Shadow DOM overlay)
+    ├── ui/
+    │   ├── popup/             # Security popup controls
+    │   ├── warning/           # Standalone warning page & JSON export
+    │   └── dashboard/         # Enterprise Security Dashboard
+    ├── tests/                 # Unit & integration test suites
+    └── docs/                  # Architecture, Plugin & Security guides
+```
+
+---
+
+## 🚀 Installation & Setup
+
+### Chrome / Edge / Brave
+1. Download or clone this repository:
+   ```bash
+   git clone https://github.com/JEFFERSON-007/phishing-extension.git
+   ```
+2. Open Chrome and navigate to `chrome://extensions/`.
+3. Enable **Developer mode** (toggle in the top-right corner).
+4. Click **Load unpacked**.
+5. Select the repository root folder (`Phishing Extension`).
+6. The Phishing Detector shield icon will appear in your toolbar!
+
+### Firefox
+1. Open Firefox and navigate to `about:debugging#/runtime/this-firefox`.
+2. Click **Load Temporary Add-on**.
+3. Select `manifest.json` from the extension folder.
+
+---
+
+## 📊 Risk Tiers & Scoring
+
+Scores are calculated on a **0–100 Scale** across 5 threat levels:
+
+| Risk Score | Classification | Toolbar Badge | Default Action |
+| :---: | :---: | :---: | :--- |
+| **0 – 19** | **SAFE** | None | Normal browsing |
+| **20 – 39** | **LOW** | None | Silent tracking & score update |
+| **40 – 59** | **MEDIUM** | Yellow `!` | Warning badge indicator |
+| **60 – 79** | **HIGH** | Orange `!!` | Renders isolated Shadow DOM warning overlay |
+| **80 – 100** | **CRITICAL** | Red `!!!` | Pre-navigation block to standalone warning page |
+
+---
+
+## 🔐 Privacy & Zero Telemetry Guarantee
+
+- ✅ **100% Offline-First**: All analysis runs locally inside client browser JavaScript.
+- ✅ **Zero Telemetry**: No user data, URLs, or DOM contents are ever transmitted to external servers.
+- ✅ **Zero External API Dependencies**: No cloud APIs required for default operation.
+- ✅ **Anti-Tamper Security**: Post-load overlays render within an isolated `#phishing-detector-root` Shadow DOM (`mode: 'closed'`).
+
+---
+
+## 📖 Developer Documentation
+
+For detailed technical guides and architecture diagrams, check out the documentation in `src/docs/`:
+- [Architecture Guide](file:///c:/Users/mariy/OneDrive/Documents/extra%20tasks%20i%20do%20when%20i%20am%20bored/Phishing%20Extension/src/docs/ARCHITECTURE.md): Technical architecture specification and SOLID principles.
+- [Plugin & ML Guide](file:///c:/Users/mariy/OneDrive/Documents/extra%20tasks%20i%20do%20when%20i%20am%20bored/Phishing%20Extension/src/docs/PLUGINS.md): How to build custom detectors and attach ML models via `MLAdapter`.
+- [Security Model](file:///c:/Users/mariy/OneDrive/Documents/extra%20tasks%20i%20do%20when%20i%20am%20bored/Phishing%20Extension/src/docs/SECURITY.md): Threat model, CSP constraints, and memory isolation design.
+
+---
+
+## 📝 License
+
+This project is open-source and provided for personal and educational security use.
+
+*Made with ❤️ for a safer, private internet.* 🛡️

@@ -110,6 +110,13 @@ Scores are calculated on a **0–100 Scale** across 5 threat levels:
 
 ---
 
+## ⚡ Recent Activity
+
+<!--START_SECTION:activity-->
+<!--END_SECTION:activity-->
+
+---
+
 ## 🔐 Privacy & Zero Telemetry Guarantee
 
 - ✅ **100% Offline-First**: All analysis runs locally inside client browser JavaScript.

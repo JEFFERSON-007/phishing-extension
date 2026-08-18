@@ -101,13 +101,31 @@ export class PunycodeUtils {
   }
 
   /**
-   * Replace visual substitutions (e.g. 0->o, 1->l, @->a) with standard Latin characters.
+   * Normalize homographs by replacing confusable characters with their Latin equivalents.
+   * @param {string} str 
+   * @returns {string}
+   */
+  static normalizeHomographs(str) {
+    if (!str || typeof str !== 'string') return '';
+    let output = str;
+    for (const [latinChar, lookalikes] of Object.entries(PunycodeUtils.CONFUSABLES)) {
+      for (const lookalike of lookalikes) {
+        if (output.includes(lookalike)) {
+          output = output.replaceAll(lookalike, latinChar);
+        }
+      }
+    }
+    return output;
+  }
+
+  /**
+   * Replace visual substitutions (e.g. 0->o, 1->l, @->a) and homographs with standard Latin characters.
    * @param {string} str 
    * @returns {string}
    */
   static replaceSubstitutions(str) {
     if (!str || typeof str !== 'string') return '';
-    let output = str.toLowerCase();
+    let output = PunycodeUtils.normalizeHomographs(str.toLowerCase());
     for (const [sub, target] of Object.entries(PunycodeUtils.CHAR_SUBSTITUTIONS)) {
       output = output.replaceAll(sub, target);
     }

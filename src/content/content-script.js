@@ -47,11 +47,39 @@
       }))
     }));
 
+    const iframes = Array.from(document.querySelectorAll('iframe')).map(iframe => ({
+      src: iframe.src || iframe.getAttribute('src') || '',
+      width: parseInt(iframe.width || iframe.style.width || '100', 10),
+      height: parseInt(iframe.height || iframe.style.height || '100', 10),
+      isHidden: iframe.style.display === 'none' || iframe.style.visibility === 'hidden' || iframe.style.opacity === '0'
+    }));
+
+    const scripts = Array.from(document.querySelectorAll('script')).map(script => ({
+      textContent: script.textContent || ''
+    }));
+
+    const overlays = Array.from(document.querySelectorAll('div, section')).filter(node => {
+      const style = node.style || {};
+      return (style.position === 'fixed' || style.position === 'absolute') &&
+             (style.zIndex > 9999 || parseInt(style.zIndex, 10) > 9999) &&
+             (style.width === '100vw' || style.width === '100%' || style.left === '0px');
+    }).map(() => ({ isOverlay: true }));
+
+    const anchors = Array.from(document.querySelectorAll('a[href]')).slice(0, 50).map(anchor => ({
+      text: (anchor.textContent || '').trim(),
+      href: anchor.href || ''
+    }));
+
     return {
       url: location.href,
       title: document.title,
-      dom: document.documentElement,
       forms,
+      domData: {
+        iframes,
+        scripts,
+        overlays,
+        anchors
+      },
       behavior: { ...behavioralFlags }
     };
   }

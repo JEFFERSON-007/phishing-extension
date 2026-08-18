@@ -59,11 +59,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   function renderDefaultSafeState() {
     scoreNum.textContent = '0';
     statusTitle.textContent = 'SAFE';
     gaugeCircle.style.borderColor = '#22c55e';
     findingsList.innerHTML = '<div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>';
+    
+    ['url-status', 'form-status', 'dom-status', 'behavior-status'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.textContent = 'Safe';
+    });
   }
 
   function renderStatus(result) {
@@ -78,8 +93,19 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     gaugeCircle.style.borderColor = color;
 
+    const triggered = result.detectorsTriggered || [];
+    const urlEl = document.getElementById('url-status');
+    const formEl = document.getElementById('form-status');
+    const domEl = document.getElementById('dom-status');
+    const behEl = document.getElementById('behavior-status');
+
+    if (urlEl) urlEl.textContent = (triggered.includes('URLDetector') || triggered.includes('ReputationEngine') || triggered.includes('BrandImpersonationDetector')) ? 'Flagged' : 'Safe';
+    if (formEl) formEl.textContent = triggered.includes('FormDetector') ? 'Flagged' : 'Safe';
+    if (domEl) domEl.textContent = triggered.includes('DOMDetector') ? 'Flagged' : 'Safe';
+    if (behEl) behEl.textContent = triggered.includes('BehaviorDetector') ? 'Flagged' : 'Safe';
+
     if (result.reasons && result.reasons.length > 0) {
-      findingsList.innerHTML = result.reasons.map(r => `<div class="finding-item">• ${r}</div>`).join('');
+      findingsList.innerHTML = result.reasons.map(r => `<div class="finding-item">• ${escapeHTML(r)}</div>`).join('');
     } else {
       renderDefaultSafeState();
     }

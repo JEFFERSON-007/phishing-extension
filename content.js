@@ -226,7 +226,7 @@ function createThreatsHTML(threats) {
       <strong>Detected Threats:</strong>
       <ul>
         ${displayThreats.map((threat, idx) =>
-        `<li><span class="threat-badge">${idx + 1}</span> ${threat}</li>`
+        `<li><span class="threat-badge">${idx + 1}</span> ${sanitizeHTML(threat)}</li>`
     ).join('')}
         ${remaining > 0 ? `<li style="margin-top: 8px; opacity: 0.7;">...and ${remaining} more threat(s)</li>` : ''}
       </ul>
@@ -235,6 +235,13 @@ function createThreatsHTML(threats) {
       </div>
     </div>
   `;
+}
+
+function sanitizeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }
 
 /**

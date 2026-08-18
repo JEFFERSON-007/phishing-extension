@@ -74,12 +74,18 @@ export class MultiLayerCache {
   }
 
   /**
-   * Check if active key exists.
+   * Check if active key exists without mutating hit statistics.
    * @param {string} key 
    * @returns {boolean}
    */
   has(key) {
-    return this.get(key) !== null;
+    if (!this.cache.has(key)) return false;
+    const item = this.cache.get(key);
+    if (Date.now() - item.timestamp > this.ttlMs) {
+      this.cache.delete(key);
+      return false;
+    }
+    return true;
   }
 
   /**

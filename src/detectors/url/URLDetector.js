@@ -145,21 +145,35 @@ export class URLDetector extends DetectorInterface {
       }
 
       // 6. Typosquatting & Levenshtein Distance Check
+      const normalizedHost = PunycodeUtils.replaceSubstitutions(hostname);
+      const hostLabel = hostname.split('.')[0];
+      const normalizedLabel = normalizedHost.split('.')[0];
+
       for (const targetBrand of this.legitimateDomains) {
-        if (hostname !== targetBrand && hostname.includes(targetBrand.split('.')[0])) {
-          const distance = EntropyUtils.calculateLevenshteinDistance(hostname, targetBrand);
-          if (distance > 0 && distance <= 2) {
-            findings.push({
-              id: 'URL_TYPOSQUATTING',
-              type: 'TYPOSQUATTING_ATTACK',
-              description: `Domain '${hostname}' is a potential typosquatting clone of '${targetBrand}'.`,
-              score: 35,
-              severity: 'HIGH',
-              metadata: { targetBrand, editDistance: distance }
-            });
-            totalScore += 35;
-            break;
-          }
+        const brandLabel = targetBrand.split('.')[0];
+        if (hostname === targetBrand || hostname.endsWith('.' + targetBrand)) {
+          continue;
+        }
+
+        const rawDistance = EntropyUtils.calculateLevenshteinDistance(hostLabel, brandLabel);
+        const normDistance = EntropyUtils.calculateLevenshteinDistance(normalizedLabel, brandLabel);
+        const minDistance = Math.min(rawDistance, normDistance);
+
+        const isTyposquat = (minDistance > 0 && minDistance <= 2) || 
+                            (normalizedLabel === brandLabel && hostLabel !== brandLabel) ||
+                            (normalizedHost.includes(brandLabel) && !hostname.endsWith('.' + targetBrand) && hostname !== targetBrand);
+
+        if (isTyposquat) {
+          findings.push({
+            id: 'URL_TYPOSQUATTING',
+            type: 'TYPOSQUATTING_ATTACK',
+            description: `Domain '${hostname}' is a potential typosquatting clone of '${targetBrand}'.`,
+            score: 35,
+            severity: 'HIGH',
+            metadata: { targetBrand, editDistance: minDistance }
+          });
+          totalScore += 35;
+          break;
         }
       }
 

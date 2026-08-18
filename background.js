@@ -22,6 +22,7 @@ if (typeof Logger !== 'undefined' && typeof CONFIG !== 'undefined') {
 
 // Extension state
 let stats = {
+  sitesScanned: 0,
   sitesChecked: 0,
   threatsBlocked: 0,
   lastUpdate: Date.now()
@@ -330,7 +331,8 @@ async function updateBadge(tabId, analysis) {
  * @param {Object} analysis - Analysis data
  */
 function updateStatsFromAnalysis(analysis) {
-  stats.sitesChecked++;
+  stats.sitesScanned = (stats.sitesScanned || 0) + 1;
+  stats.sitesChecked = (stats.sitesChecked || 0) + 1;
 
   if (analysis.level === 'high' || analysis.level === 'critical') {
     stats.threatsBlocked++;

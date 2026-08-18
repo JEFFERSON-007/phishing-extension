@@ -10,9 +10,25 @@ document.addEventListener('DOMContentLoaded', () => {
   const score = params.get('score') || '80';
   const reason = params.get('reason') || 'High risk phishing threat detected.';
 
+  function escapeHTML(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  const numScore = parseInt(score, 10) || 0;
+  const classificationEl = document.getElementById('classification');
+  if (classificationEl) {
+    classificationEl.textContent = numScore >= 80 ? 'CRITICAL THREAT' : numScore >= 60 ? 'HIGH RISK THREAT' : numScore >= 40 ? 'MEDIUM RISK THREAT' : 'LOW RISK';
+  }
+
   document.getElementById('score-val').textContent = score;
   document.getElementById('target-url').textContent = targetUrl;
-  document.getElementById('reasons-list').innerHTML = `<div class="reason-item">• ${decodeURIComponent(reason)}</div>`;
+  document.getElementById('reasons-list').innerHTML = `<div class="reason-item">• ${escapeHTML(decodeURIComponent(reason))}</div>`;
 
   document.getElementById('btn-back')?.addEventListener('click', () => {
     window.history.back();

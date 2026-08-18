@@ -78,6 +78,7 @@ export class BehaviorDetector extends DetectorInterface {
     // 5. Hardware / Sensor Device API Request (WebUSB, Bluetooth, WebRTC)
     if (behavior.requestedSensitiveAPIs && Array.isArray(behavior.requestedSensitiveAPIs)) {
       for (const api of behavior.requestedSensitiveAPIs) {
+        if (typeof api !== 'string') continue;
         findings.push({
           id: `BEHAVIOR_SENSITIVE_API_${api.toUpperCase()}`,
           type: 'SENSITIVE_API_REQUEST',

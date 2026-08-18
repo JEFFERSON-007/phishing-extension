@@ -74,8 +74,10 @@ export class RiskFusionEngine {
 
     let rawScore = totalWeight > 0 ? (weightedSum / totalWeight) : 0;
 
-    // Apply severe finding boost (if a high severity finding exists, ensure score does not drop below it)
-    if (maxSingleScore >= 40 && rawScore < maxSingleScore * 0.75) {
+    // Apply severe finding boost to prevent false negative score dilution
+    if (maxSingleScore >= 80) {
+      rawScore = Math.max(rawScore, maxSingleScore * 0.85);
+    } else if (maxSingleScore >= 40 && rawScore < maxSingleScore * 0.75) {
       rawScore = maxSingleScore * 0.75;
     }
 

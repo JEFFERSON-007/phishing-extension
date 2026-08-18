@@ -13,7 +13,7 @@ export class DOMDetector extends DetectorInterface {
   enabled() { return true; }
 
   supports(context) {
-    return Boolean(context && context.dom);
+    return Boolean(context && (context.dom || context.domData));
   }
 
   /**
@@ -26,8 +26,42 @@ export class DOMDetector extends DetectorInterface {
     const findings = [];
     let totalScore = 0;
     const dom = context.dom;
+    const domData = context.domData;
 
-    if (!dom || typeof dom.querySelectorAll !== 'function') {
+    let iframes = [];
+    let scripts = [];
+    let overlays = [];
+    let anchors = [];
+
+    if (dom && typeof dom.querySelectorAll === 'function') {
+      iframes = Array.from(dom.querySelectorAll('iframe')).map(iframe => ({
+        src: iframe.src || iframe.getAttribute('src') || '',
+        width: parseInt(iframe.width || iframe.style.width || '100', 10),
+        height: parseInt(iframe.height || iframe.style.height || '100', 10),
+        isHidden: iframe.style.display === 'none' || iframe.style.visibility === 'hidden' || iframe.style.opacity === '0'
+      }));
+
+      scripts = Array.from(dom.querySelectorAll('script')).map(script => ({
+        textContent: script.textContent || ''
+      }));
+
+      overlays = Array.from(dom.querySelectorAll('div, section')).filter(node => {
+        const style = node.style || {};
+        return (style.position === 'fixed' || style.position === 'absolute') &&
+               (style.zIndex > 9999 || parseInt(style.zIndex, 10) > 9999) &&
+               (style.width === '100vw' || style.width === '100%' || style.left === '0px');
+      }).map(() => ({ isOverlay: true }));
+
+      anchors = Array.from(dom.querySelectorAll('a[href]')).slice(0, 50).map(anchor => ({
+        text: (anchor.textContent || '').trim(),
+        href: anchor.href || ''
+      }));
+    } else if (domData) {
+      iframes = domData.iframes || [];
+      scripts = domData.scripts || [];
+      overlays = domData.overlays || [];
+      anchors = domData.anchors || [];
+    } else {
       return {
         score: 0,
         confidence: 1.0,
@@ -40,12 +74,11 @@ export class DOMDetector extends DetectorInterface {
 
     try {
       // 1. Hidden / Zero-Pixel IFrames
-      const iframes = Array.from(dom.querySelectorAll('iframe'));
       for (const iframe of iframes) {
-        const src = iframe.src || iframe.getAttribute('src') || '';
-        const width = parseInt(iframe.width || iframe.style.width || '100', 10);
-        const height = parseInt(iframe.height || iframe.style.height || '100', 10);
-        const isHidden = iframe.style.display === 'none' || iframe.style.visibility === 'hidden' || iframe.style.opacity === '0';
+        const src = iframe.src || '';
+        const width = iframe.width;
+        const height = iframe.height;
+        const isHidden = iframe.isHidden;
 
         if ((width <= 2 || height <= 2 || isHidden) && src && !src.startsWith('about:blank')) {
           findings.push({
@@ -61,7 +94,6 @@ export class DOMDetector extends DetectorInterface {
       }
 
       // 2. Obfuscated Script & Encoded JS Check
-      const scripts = Array.from(dom.querySelectorAll('script'));
       for (const script of scripts) {
         const text = script.textContent || '';
         if (text.includes('eval(') || text.includes('unescape(') || text.match(/\\x[0-9a-f]{2}/gi)) {
@@ -80,13 +112,6 @@ export class DOMDetector extends DetectorInterface {
       }
 
       // 3. Fake Overlay / Fullscreen Clickjacking Mask
-      const overlays = Array.from(dom.querySelectorAll('div, section')).filter(node => {
-        const style = node.style || {};
-        return (style.position === 'fixed' || style.position === 'absolute') &&
-               (style.zIndex > 9999 || parseInt(style.zIndex, 10) > 9999) &&
-               (style.width === '100vw' || style.width === '100%' || style.left === '0px');
-      });
-
       if (overlays.length > 0) {
         findings.push({
           id: 'DOM_FAKE_OVERLAY',
@@ -99,9 +124,8 @@ export class DOMDetector extends DetectorInterface {
       }
 
       // 4. Misleading Anchors (Display Text vs Href mismatch)
-      const anchors = Array.from(dom.querySelectorAll('a[href]'));
-      for (const anchor of anchors.slice(0, 50)) { // Inspect first 50 links for performance
-        const text = (anchor.textContent || '').trim();
+      for (const anchor of anchors) {
+        const text = (anchor.text || '').trim();
         const href = anchor.href || '';
         if (text.startsWith('http://') || text.startsWith('https://') || text.match(/^[\w-]+\.[\w-]+/)) {
           try {

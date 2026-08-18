@@ -11,11 +11,18 @@
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
+  <!-- Ambient Animated Background Background -->
+  <div class="ambient-bg">
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+  </div>
+
   <div class="app-container">
     <!-- Sidebar Navigation -->
-    <aside class="sidebar">
+    <aside class="sidebar glass-sidebar">
       <div class="sidebar-brand">
-        <div class="brand-logo-wrapper">
+        <div class="brand-logo-wrapper glow-blue">
           <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             <path d="M12 8v4"/>
@@ -49,12 +56,12 @@
       </nav>
 
       <div class="sidebar-footer">
-        <div class="privacy-card">
+        <div class="privacy-card glass-panel-sm">
           <div class="privacy-status">
             <span class="pulse-dot"></span>
             <span class="privacy-title">Offline Engine Active</span>
           </div>
-          <p class="privacy-desc">100% Client-Side Engine. Zero Cloud Telemetry.</p>
+          <p class="privacy-desc">100% Client-Side Engine.<br>Zero Cloud Telemetry.</p>
         </div>
       </div>
     </aside>
@@ -62,7 +69,7 @@
     <!-- Main Content Area -->
     <main class="main-content">
       <!-- Top Navigation Header -->
-      <header class="top-header">
+      <header class="top-header animate-fade-in-down">
         <div class="header-title-box">
           <h1 id="page-title">Security Overview</h1>
           <p class="header-subtitle" id="page-subtitle">Real-time threat monitoring and heuristic pipeline telemetry</p>
@@ -83,7 +90,7 @@
       <div class="tab-pane active" id="tab-overview">
         <!-- KPI Metrics Grid -->
         <div class="kpi-grid">
-          <div class="kpi-card glow-cyan">
+          <div class="kpi-card glow-cyan animate-fade-in-up" style="animation-delay: 0.1s">
             <div class="kpi-header">
               <span class="kpi-label">Total Sites Scanned</span>
               <div class="kpi-icon-box cyan">
@@ -97,7 +104,7 @@
             </div>
           </div>
 
-          <div class="kpi-card glow-red">
+          <div class="kpi-card glow-red animate-fade-in-up" style="animation-delay: 0.2s">
             <div class="kpi-header">
               <span class="kpi-label">Threats Neutralized</span>
               <div class="kpi-icon-box red">
@@ -111,7 +118,7 @@
             </div>
           </div>
 
-          <div class="kpi-card glow-emerald">
+          <div class="kpi-card glow-emerald animate-fade-in-up" style="animation-delay: 0.3s">
             <div class="kpi-header">
               <span class="kpi-label">Detector Modules</span>
               <div class="kpi-icon-box emerald">
@@ -125,7 +132,7 @@
             </div>
           </div>
 
-          <div class="kpi-card glow-violet">
+          <div class="kpi-card glow-violet animate-fade-in-up" style="animation-delay: 0.4s">
             <div class="kpi-header">
               <span class="kpi-label">Avg Pipeline Latency</span>
               <div class="kpi-icon-box violet">
@@ -141,15 +148,17 @@
         </div>
 
         <!-- Charts & Activity Area -->
-        <div class="dashboard-grid">
+        <div class="dashboard-grid animate-fade-in-up" style="animation-delay: 0.5s">
           <!-- Live Scan Volume Chart -->
           <div class="glass-panel chart-panel">
             <div class="panel-header">
               <div class="panel-title">
-                <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                <div class="icon-bg-cyan">
+                  <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
                 <h3>Detection Telemetry & Threat Trends</h3>
               </div>
-              <span class="badge-tag">Live Feed</span>
+              <span class="badge-tag live-pulse">Live Feed</span>
             </div>
             <div class="chart-container">
               <canvas id="scanTelemetryChart" height="220"></canvas>
@@ -160,7 +169,9 @@
           <div class="glass-panel risk-distribution-panel">
             <div class="panel-header">
               <div class="panel-title">
-                <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                <div class="icon-bg-purple">
+                  <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
+                </div>
                 <h3>Risk Severity Split</h3>
               </div>
             </div>
@@ -186,10 +197,12 @@
         </div>
 
         <!-- Recent Audit Log Table -->
-        <div class="glass-panel full-width">
+        <div class="glass-panel full-width animate-fade-in-up" style="animation-delay: 0.6s">
           <div class="panel-header">
             <div class="panel-title">
-              <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              <div class="icon-bg-blue">
+                <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              </div>
               <h3>Recent Detection Audit Feed</h3>
             </div>
             <button class="btn-secondary" id="btn-clear-feed">Clear Feed</button>

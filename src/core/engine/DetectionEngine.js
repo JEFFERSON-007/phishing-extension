@@ -63,11 +63,15 @@ export class DetectionEngine {
     const detectorResults = [];
     const detectorTimings = {};
 
-    // 3. Execute detectors in parallel with fault isolation
+    // 3. Execute detectors in parallel with fault isolation & timeout protection
     const promises = detectors.map(async (detector) => {
       const dStart = performance.now();
       try {
-        const res = await detector.analyze(context);
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error(`Detector ${detector.name()} timed out after 2000ms`)), 2000);
+        });
+
+        const res = await Promise.race([detector.analyze(context), timeoutPromise]);
         const dDuration = parseFloat((performance.now() - dStart).toFixed(2));
         detectorTimings[detector.name()] = dDuration;
         return { name: detector.name(), result: res };

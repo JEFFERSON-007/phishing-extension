@@ -75,6 +75,21 @@ export class BrandImpersonationDetector extends DetectorInterface {
         totalScore += score;
         break;
       }
+
+      // 2. Hostname Keyword Spoofing (Domain includes brand name label on untrusted host)
+      const brandLabel = brand.domain.split('.')[0];
+      if (currentHost.includes(brandLabel)) {
+        findings.push({
+          id: `BRAND_DOMAIN_SPOOF_${brand.name.toUpperCase().replace(/\s+/g, '_')}`,
+          type: 'BRAND_DOMAIN_SPOOFING',
+          description: `Domain '${currentHost}' embeds brand name '${brand.name}' without authorization.`,
+          score: 30,
+          severity: 'HIGH',
+          metadata: { targetBrand: brand.name, legitimateDomain: brand.domain }
+        });
+        totalScore += 30;
+        break;
+      }
     }
 
     const finalScore = Math.min(totalScore, 100);

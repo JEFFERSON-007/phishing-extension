@@ -4,19 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Security Alert — Access Blocked</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="warning.css">
 </head>
 <body>
+  <!-- Animated Hazard Background -->
+  <div class="hazard-bg"></div>
+  <div class="particles-overlay"></div>
+
   <div class="warning-wrapper">
-    <div class="card">
+    <div class="card glass-effect">
       <div class="header">
-        <span class="icon">🛑</span>
+        <div class="icon-pulse-wrapper">
+          <span class="icon">🛑</span>
+        </div>
         <h1>Phishing & Scam Threat Blocked</h1>
         <p class="subtitle">Access to this page was intercepted by Phishing Detector to protect your credentials and data.</p>
       </div>
 
       <div class="score-banner">
-        <div class="score-box">
+        <div class="score-box glow-red">
           <span class="score-val" id="score-val">0</span>
           <span class="score-max">/100</span>
         </div>
@@ -45,7 +54,7 @@
       </div>
 
       <div class="actions">
-        <button class="btn-back" id="btn-back">Go Back to Safety</button>
+        <button class="btn-back animated-gradient" id="btn-back">Go Back to Safety</button>
         <button class="btn-export" id="btn-export">Export Diagnostic JSON</button>
         <button class="btn-proceed" id="btn-proceed">Proceed Anyway (Unsafe)</button>
       </div>

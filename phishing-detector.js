@@ -82,7 +82,7 @@ class PhishingDetector {
 
     // Character substitutions
     this._charSubstitutions = {
-      '0': 'o', '1': 'il', '3': 'e', '5': 's', '8': 'b', '@': 'a', '$': 's'
+      '0': 'o', '1': 'l', '3': 'e', '5': 's', '8': 'b', '@': 'a', '$': 's'
     };
 
     // Keyboard proximity

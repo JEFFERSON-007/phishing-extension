@@ -3,303 +3,179 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phishing Detector — Enterprise SOC Dashboard</title>
-  <!-- Google Fonts: Outfit & JetBrains Mono -->
+  <title>Dashboard — Phishing Detector</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
-  <!-- Ambient Animated Background Background -->
-  <div class="ambient-bg">
-    <div class="glow-orb orb-1"></div>
-    <div class="glow-orb orb-2"></div>
-    <div class="glow-orb orb-3"></div>
-  </div>
-
-  <div class="app-container">
-    <!-- Sidebar Navigation -->
-    <aside class="sidebar glass-sidebar">
-      <div class="sidebar-brand">
-        <div class="brand-logo-wrapper glow-blue">
-          <svg class="brand-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-            <path d="M12 8v4"/>
-            <path d="M12 16h.01"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="brand-name">Phishing Detector</span>
-          <span class="brand-tag">Enterprise SOC v2.0</span>
-        </div>
+  <div class="app-layout">
+    <nav class="sidebar">
+      <div class="brand">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z"/>
+        </svg>
+        <span>Security Center</span>
       </div>
-
-      <nav class="nav-menu">
-        <button class="nav-item active" data-tab="overview">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-          <span>Security Overview</span>
-        </button>
-        <button class="nav-item" data-tab="detectors">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-          <span>Detector Modules</span>
-          <span class="badge-count" id="detector-count-badge">9</span>
-        </button>
-        <button class="nav-item" data-tab="performance">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span>Latency & Performance</span>
-        </button>
-        <button class="nav-item" data-tab="policy">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
-          <span>Policy & Rule Editor</span>
-        </button>
-      </nav>
-
+      <div class="nav-links">
+        <a class="nav-item active" data-tab="overview">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+          Overview
+        </a>
+        <a class="nav-item" data-tab="detectors">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          Engines
+        </a>
+        <a class="nav-item" data-tab="performance">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+          Telemetry
+        </a>
+        <a class="nav-item" data-tab="policy">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Policies
+        </a>
+      </div>
       <div class="sidebar-footer">
-        <div class="privacy-card glass-panel-sm">
-          <div class="privacy-status">
-            <span class="pulse-dot"></span>
-            <span class="privacy-title">Offline Engine Active</span>
-          </div>
-          <p class="privacy-desc">100% Client-Side Engine.<br>Zero Cloud Telemetry.</p>
+        <div class="status-indicator-box">
+          <div class="dot pulse"></div>
+          <span>Local Engine Active</span>
         </div>
       </div>
-    </aside>
+    </nav>
 
-    <!-- Main Content Area -->
     <main class="main-content">
-      <!-- Top Navigation Header -->
-      <header class="top-header animate-fade-in-down">
-        <div class="header-title-box">
-          <h1 id="page-title">Security Overview</h1>
-          <p class="header-subtitle" id="page-subtitle">Real-time threat monitoring and heuristic pipeline telemetry</p>
+      <header class="topbar">
+        <div class="page-title">
+          <h1 id="page-title">Overview</h1>
+          <span class="badge" id="page-subtitle">Real-time analysis</span>
         </div>
-        <div class="header-actions">
-          <div class="search-input-box">
-            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input type="text" id="global-search" placeholder="Search domains, threats, rules...">
+        <div class="topbar-actions">
+          <div class="search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="global-search" placeholder="Search logs...">
           </div>
-          <button class="btn-primary" id="btn-export-log">
-            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-            <span>Export Audit JSON</span>
-          </button>
+          <button class="btn btn-secondary" id="btn-export-log">Export Data</button>
         </div>
       </header>
 
-      <!-- TAB 1: OVERVIEW -->
-      <div class="tab-pane active" id="tab-overview">
-        <!-- KPI Metrics Grid -->
-        <div class="kpi-grid">
-          <div class="kpi-card glow-cyan animate-fade-in-up" style="animation-delay: 0.1s">
-            <div class="kpi-header">
-              <span class="kpi-label">Total Sites Scanned</span>
-              <div class="kpi-icon-box cyan">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+      <div class="content-scroll">
+        <div class="content-container">
+          
+          <!-- OVERVIEW TAB -->
+          <div class="tab-pane active" id="tab-overview">
+            <div class="metrics-grid">
+              <div class="metric-card">
+                <span class="metric-label">Sites Scanned</span>
+                <span class="metric-value" id="val-scanned">0</span>
+                <div class="metric-chart"><div class="line"></div></div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Threats Blocked</span>
+                <span class="metric-value danger" id="val-blocked">0</span>
+                <div class="metric-chart danger"><div class="line"></div></div>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Active Engines</span>
+                <span class="metric-value">9<span class="metric-suffix">/9</span></span>
+                <span class="metric-sub safe">All systems operational</span>
+              </div>
+              <div class="metric-card">
+                <span class="metric-label">Avg Latency</span>
+                <span class="metric-value">8.4<span class="metric-suffix">ms</span></span>
+                <span class="metric-sub">P99 < 12ms</span>
               </div>
             </div>
-            <div class="kpi-value" id="val-scanned">0</div>
-            <div class="kpi-footer">
-              <span class="trend positive">↑ 100% Local</span>
-              <span class="kpi-sub">Lifetime Scans</span>
+
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Security Events</h2>
+                <button class="btn btn-ghost" id="btn-clear-feed">Clear History</button>
+              </div>
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Time</th>
+                      <th>Domain</th>
+                      <th>Risk</th>
+                      <th>Detectors</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody id="audit-feed-tbody">
+                    <!-- Dynamic -->
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
-          <div class="kpi-card glow-red animate-fade-in-up" style="animation-delay: 0.2s">
-            <div class="kpi-header">
-              <span class="kpi-label">Threats Neutralized</span>
-              <div class="kpi-icon-box red">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-              </div>
-            </div>
-            <div class="kpi-value" id="val-blocked">0</div>
-            <div class="kpi-footer">
-              <span class="trend negative">Critical & High</span>
-              <span class="kpi-sub">Threats Blocked</span>
+          <!-- DETECTORS TAB -->
+          <div class="tab-pane" id="tab-detectors">
+            <div class="detectors-grid" id="detector-cards-container">
+              <!-- Dynamic -->
             </div>
           </div>
 
-          <div class="kpi-card glow-emerald animate-fade-in-up" style="animation-delay: 0.3s">
-            <div class="kpi-header">
-              <span class="kpi-label">Detector Modules</span>
-              <div class="kpi-icon-box emerald">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <!-- PERFORMANCE TAB -->
+          <div class="tab-pane" id="tab-performance">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Latency Profiler</h2>
               </div>
-            </div>
-            <div class="kpi-value">9 / 9</div>
-            <div class="kpi-footer">
-              <span class="trend positive">100% Healthy</span>
-              <span class="kpi-sub">All Engines Online</span>
+              <div class="perf-list" id="performance-bars-list">
+                <!-- Dynamic -->
+              </div>
             </div>
           </div>
 
-          <div class="kpi-card glow-violet animate-fade-in-up" style="animation-delay: 0.4s">
-            <div class="kpi-header">
-              <span class="kpi-label">Avg Pipeline Latency</span>
-              <div class="kpi-icon-box violet">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          <!-- POLICY TAB -->
+          <div class="tab-pane" id="tab-policy">
+            <div class="panel">
+              <div class="panel-header">
+                <h2>Domain Rules</h2>
+                <button class="btn btn-primary" id="btn-add-rule">Add Rule</button>
+              </div>
+              <div class="table-container">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Domain Pattern</th>
+                      <th>Action</th>
+                      <th>Source</th>
+                      <th>Created</th>
+                    </tr>
+                  </thead>
+                  <tbody id="policy-rules-tbody">
+                    <tr>
+                      <td><code class="code-block">*.google.com</code></td>
+                      <td><span class="badge safe">Allow</span></td>
+                      <td>System</td>
+                      <td class="text-muted">Just now</td>
+                    </tr>
+                    <tr>
+                      <td><code class="code-block">*.paypal.com</code></td>
+                      <td><span class="badge safe">Allow</span></td>
+                      <td>System</td>
+                      <td class="text-muted">Just now</td>
+                    </tr>
+                    <tr>
+                      <td><code class="code-block">login-update-secure.net</code></td>
+                      <td><span class="badge danger">Block</span></td>
+                      <td>User</td>
+                      <td class="text-muted">Just now</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </div>
-            <div class="kpi-value">&lt; 8.4 ms</div>
-            <div class="kpi-footer">
-              <span class="trend positive">⚡ Hyper Fast</span>
-              <span class="kpi-sub">Non-Blocking</span>
-            </div>
           </div>
-        </div>
 
-        <!-- Charts & Activity Area -->
-        <div class="dashboard-grid animate-fade-in-up" style="animation-delay: 0.5s">
-          <!-- Live Scan Volume Chart -->
-          <div class="glass-panel chart-panel">
-            <div class="panel-header">
-              <div class="panel-title">
-                <div class="icon-bg-cyan">
-                  <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </div>
-                <h3>Detection Telemetry & Threat Trends</h3>
-              </div>
-              <span class="badge-tag live-pulse">Live Feed</span>
-            </div>
-            <div class="chart-container">
-              <canvas id="scanTelemetryChart" height="220"></canvas>
-            </div>
-          </div>
-
-          <!-- Risk Distribution Gauge Panel -->
-          <div class="glass-panel risk-distribution-panel">
-            <div class="panel-header">
-              <div class="panel-title">
-                <div class="icon-bg-purple">
-                  <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.21 15.89A10 10 0 1 1 8 2.83"/><path d="M22 12A10 10 0 0 0 12 2v10z"/></svg>
-                </div>
-                <h3>Risk Severity Split</h3>
-              </div>
-            </div>
-            <div class="distribution-bars">
-              <div class="dist-row">
-                <div class="dist-info"><span>Critical Risk (80-100)</span><span class="dist-val red">12%</span></div>
-                <div class="dist-bar"><div class="dist-fill red" style="width: 12%;"></div></div>
-              </div>
-              <div class="dist-row">
-                <div class="dist-info"><span>High Risk (60-79)</span><span class="dist-val orange">18%</span></div>
-                <div class="dist-bar"><div class="dist-fill orange" style="width: 18%;"></div></div>
-              </div>
-              <div class="dist-row">
-                <div class="dist-info"><span>Medium Risk (40-59)</span><span class="dist-val yellow">25%</span></div>
-                <div class="dist-bar"><div class="dist-fill yellow" style="width: 25%;"></div></div>
-              </div>
-              <div class="dist-row">
-                <div class="dist-info"><span>Safe Browsing (0-39)</span><span class="dist-val green">45%</span></div>
-                <div class="dist-bar"><div class="dist-fill green" style="width: 45%;"></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Recent Audit Log Table -->
-        <div class="glass-panel full-width animate-fade-in-up" style="animation-delay: 0.6s">
-          <div class="panel-header">
-            <div class="panel-title">
-              <div class="icon-bg-blue">
-                <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-              </div>
-              <h3>Recent Detection Audit Feed</h3>
-            </div>
-            <button class="btn-secondary" id="btn-clear-feed">Clear Feed</button>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table" id="audit-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Target Domain</th>
-                  <th>Risk Score</th>
-                  <th>Severity Tier</th>
-                  <th>Triggered Detectors</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody id="audit-feed-tbody">
-                <!-- Dynamically populated -->
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 2: DETECTORS -->
-      <div class="tab-pane" id="tab-detectors">
-        <div class="detector-cards-grid" id="detector-cards-container">
-          <!-- Dynamically populated detector cards -->
-        </div>
-      </div>
-
-      <!-- TAB 3: PERFORMANCE -->
-      <div class="tab-pane" id="tab-performance">
-        <div class="glass-panel full-width">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <h3>Detector Pipeline Latency Breakdown</h3>
-            </div>
-          </div>
-          <div class="performance-bars-list" id="performance-bars-list">
-            <!-- Dynamically populated latency meters -->
-          </div>
-        </div>
-      </div>
-
-      <!-- TAB 4: POLICY & RULES -->
-      <div class="tab-pane" id="tab-policy">
-        <div class="glass-panel full-width">
-          <div class="panel-header">
-            <div class="panel-title">
-              <svg class="panel-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
-              <h3>Enterprise Policy & Domain Rules</h3>
-            </div>
-            <button class="btn-primary" id="btn-add-rule">+ Add Domain Rule</button>
-          </div>
-          <div class="table-responsive">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th>Domain Pattern</th>
-                  <th>Policy Action</th>
-                  <th>Scope</th>
-                  <th>Added On</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-              <tbody id="policy-rules-tbody">
-                <tr>
-                  <td><code>*.google.com</code></td>
-                  <td><span class="badge-tag green">PERMANENT ALLOW</span></td>
-                  <td>Enterprise Whitelist</td>
-                  <td>2026-07-27</td>
-                  <td><button class="btn-icon-only">🔒 Default</button></td>
-                </tr>
-                <tr>
-                  <td><code>*.paypal.com</code></td>
-                  <td><span class="badge-tag green">PERMANENT ALLOW</span></td>
-                  <td>Enterprise Whitelist</td>
-                  <td>2026-07-27</td>
-                  <td><button class="btn-icon-only">🔒 Default</button></td>
-                </tr>
-                <tr>
-                  <td><code>phishing-test-domain.com</code></td>
-                  <td><span class="badge-tag red">ALWAYS BLOCK</span></td>
-                  <td>Offline Blacklist</td>
-                  <td>2026-07-27</td>
-                  <td><button class="btn-icon-only">🔒 Default</button></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
       </div>
     </main>
   </div>
-
   <script src="dashboard.js"></script>
 </body>
 </html>

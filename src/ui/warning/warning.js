@@ -1,6 +1,6 @@
 /**
- * Standalone Warning Page Logic
- * Parses URL query parameters, displays threat evidence, exports JSON diagnostic logs, and handles double-confirmation bypass.
+ * Warning Page Logic
+ * Parses URL params, displays threat evidence, handles bypass.
  * @module warning
  */
 
@@ -23,34 +23,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const numScore = parseInt(score, 10) || 0;
   const classificationEl = document.getElementById('classification');
   if (classificationEl) {
-    classificationEl.textContent = numScore >= 80 ? 'CRITICAL THREAT' : numScore >= 60 ? 'HIGH RISK THREAT' : numScore >= 40 ? 'MEDIUM RISK THREAT' : 'LOW RISK';
+    classificationEl.textContent = numScore >= 80 ? 'Critical' : numScore >= 60 ? 'High Risk' : numScore >= 40 ? 'Suspicious' : 'Low';
   }
 
   document.getElementById('score-val').textContent = score;
   document.getElementById('target-url').textContent = targetUrl;
-  document.getElementById('reasons-list').innerHTML = `<div class="reason-item">• ${escapeHTML(decodeURIComponent(reason))}</div>`;
+  
+  // Set reason without extra div wrapper to match new CSS
+  document.getElementById('reasons-list').innerHTML = escapeHTML(decodeURIComponent(reason));
 
   document.getElementById('btn-back')?.addEventListener('click', () => {
     window.history.back();
   });
 
-  document.getElementById('btn-export')?.addEventListener('click', () => {
-    const data = {
-      timestamp: new Date().toISOString(),
-      targetUrl,
-      riskScore: parseInt(score, 10),
-      reason: decodeURIComponent(reason)
-    };
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `phishing-threat-report-${Date.now()}.json`;
-    a.click();
-  });
-
   document.getElementById('btn-proceed')?.addEventListener('click', () => {
-    if (confirm('Warning: Proceeding to this site may expose your accounts to security risks. Continue anyway?')) {
+    if (confirm('This site may steal your personal information. Continue anyway?')) {
       try {
         const hostname = new URL(targetUrl).hostname;
         if (typeof chrome !== 'undefined' && chrome.runtime?.sendMessage) {

@@ -1,24 +1,37 @@
 /**
  * Popup Interface Logic
- * Fetches current active tab security status and updates popup dashboard elements safely.
+ * Fetches current active tab security status and updates popup elements.
  * @module popup
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
   const scoreNum = document.getElementById('score-number');
-  const statusTitle = document.getElementById('status-title');
-  const gaugeCircle = document.getElementById('gauge-circle');
+  const headerStatus = document.getElementById('header-status');
+  const headerStatusText = document.getElementById('header-status-text');
+  const ringProgress = document.getElementById('ring-progress');
+  const currentUrl = document.getElementById('current-url');
   const findingsList = document.getElementById('findings-list');
   const btnRescan = document.getElementById('btn-rescan');
   const btnDashboard = document.getElementById('btn-dashboard');
+
+  // Ring circumference for r=44
+  const CIRC = 2 * Math.PI * 44;
 
   let currentTabId = null;
 
   if (typeof chrome !== 'undefined' && chrome.tabs) {
     try {
       const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (tabs[0] && tabs[0].id) {
+      if (tabs[0]) {
         currentTabId = tabs[0].id;
+        if (tabs[0].url) {
+          try {
+            const urlObj = new URL(tabs[0].url);
+            currentUrl.textContent = urlObj.hostname;
+          } catch {
+            currentUrl.textContent = tabs[0].url;
+          }
+        }
         fetchSecurityStatus(currentTabId);
       }
     } catch {}
@@ -27,11 +40,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   btnRescan?.addEventListener('click', () => {
     if (currentTabId && typeof chrome !== 'undefined' && chrome.tabs) {
       chrome.tabs.sendMessage(currentTabId, { action: 'TRIGGER_DOM_SCAN' }, () => {
-        if (chrome.runtime.lastError) {
-          // Ignore connection errors on unscriptable tabs (e.g. chrome:// extensions)
-        }
+        if (chrome.runtime.lastError) { /* ignore */ }
       });
-      statusTitle.textContent = 'Re-scanning...';
+      headerStatusText.textContent = 'Scanning';
       setTimeout(() => fetchSecurityStatus(currentTabId), 800);
     }
   });
@@ -44,70 +55,120 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   function fetchSecurityStatus(tabId) {
     if (typeof chrome === 'undefined' || !chrome.runtime) return;
-
     chrome.runtime.sendMessage({ action: 'GET_TAB_SECURITY_STATUS', tabId }, (response) => {
-      if (chrome.runtime.lastError) {
-        // Silently handle disconnected background worker or non-web tabs
-        renderDefaultSafeState();
-        return;
-      }
+      if (chrome.runtime.lastError) { renderSafe(); return; }
       if (response && response.result) {
         renderStatus(response.result);
       } else {
-        renderDefaultSafeState();
+        renderSafe();
       }
     });
   }
 
   function escapeHTML(str) {
     if (!str) return '';
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
   }
 
-  function renderDefaultSafeState() {
-    scoreNum.textContent = '0';
-    statusTitle.textContent = 'SAFE';
-    gaugeCircle.style.borderColor = '#22c55e';
-    findingsList.innerHTML = '<div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>';
+  function setRing(score) {
+    const offset = CIRC - (score / 100) * CIRC;
+    ringProgress.style.strokeDashoffset = offset;
+
+    let gradId = 'url(#safeGrad)';
+    if (score >= 80) gradId = 'url(#dangerGrad)';
+    else if (score >= 40) gradId = 'url(#warnGrad)';
     
-    ['url-status', 'form-status', 'dom-status', 'behavior-status'].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.textContent = 'Safe';
-    });
+    ringProgress.style.stroke = gradId;
+    
+    // Add glow effect if high risk
+    if (score >= 60) {
+      ringProgress.style.filter = 'url(#glow)';
+    } else {
+      ringProgress.style.filter = 'none';
+    }
+  }
+
+  function setStatus(label, type) {
+    headerStatusText.textContent = label;
+    headerStatus.className = `status-badge ${type}`;
+  }
+
+  function setSignal(id, flagged) {
+    const statusText = document.getElementById(id + '-status');
+    const bar = document.getElementById(id + '-bar');
+    
+    const type = flagged ? 'danger' : 'safe';
+    
+    if (statusText) {
+      statusText.textContent = flagged ? 'FLAGGED' : 'OK';
+      statusText.className = `signal-status ${type}`;
+    }
+    
+    if (bar) {
+      bar.className = `signal-bar-fill ${type}`;
+      bar.style.width = flagged ? '100%' : '100%';
+    }
+  }
+
+  function renderSafe() {
+    scoreNum.textContent = '0';
+    setRing(0);
+    setStatus('Safe', 'safe');
+    ['url','form','dom','behavior'].forEach(id => setSignal(id, false));
+    findingsList.innerHTML = '<div class="finding-empty">No suspicious activity detected.</div>';
   }
 
   function renderStatus(result) {
     const score = result.riskScore || 0;
-    scoreNum.textContent = String(score);
-    statusTitle.textContent = result.classification || 'SAFE';
+    
+    // Animate score counter
+    let currentScore = 0;
+    const duration = 1000;
+    const startTime = performance.now();
+    
+    const animateScore = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      
+      // Easing function (easeOutQuart)
+      const ease = 1 - Math.pow(1 - progress, 4);
+      currentScore = Math.floor(score * ease);
+      
+      scoreNum.textContent = String(currentScore);
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScore);
+      } else {
+        scoreNum.textContent = String(score);
+      }
+    };
+    
+    requestAnimationFrame(animateScore);
+    setRing(score);
 
-    let color = '#22c55e';
-    if (score >= 80) color = '#dc2626';
-    else if (score >= 60) color = '#ea580c';
-    else if (score >= 40) color = '#f59e0b';
-
-    gaugeCircle.style.borderColor = color;
+    const type = score >= 80 ? 'danger' : score >= 40 ? 'warn' : 'safe';
+    const label = result.classification || (score >= 80 ? 'Critical' : score >= 60 ? 'High Risk' : score >= 40 ? 'Suspicious' : 'Safe');
+    setStatus(label, type);
 
     const triggered = result.detectorsTriggered || [];
-    const urlEl = document.getElementById('url-status');
-    const formEl = document.getElementById('form-status');
-    const domEl = document.getElementById('dom-status');
-    const behEl = document.getElementById('behavior-status');
-
-    if (urlEl) urlEl.textContent = (triggered.includes('URLDetector') || triggered.includes('ReputationEngine') || triggered.includes('BrandImpersonationDetector')) ? 'Flagged' : 'Safe';
-    if (formEl) formEl.textContent = triggered.includes('FormDetector') ? 'Flagged' : 'Safe';
-    if (domEl) domEl.textContent = triggered.includes('DOMDetector') ? 'Flagged' : 'Safe';
-    if (behEl) behEl.textContent = triggered.includes('BehaviorDetector') ? 'Flagged' : 'Safe';
+    setSignal('url',  triggered.some(d => ['URLDetector','ReputationEngine','BrandImpersonationDetector'].includes(d)));
+    setSignal('form', triggered.includes('FormDetector'));
+    setSignal('dom',  triggered.includes('DOMDetector'));
+    setSignal('behavior', triggered.includes('BehaviorDetector'));
 
     if (result.reasons && result.reasons.length > 0) {
-      findingsList.innerHTML = result.reasons.map(r => `<div class="finding-item">• ${escapeHTML(r)}</div>`).join('');
+      findingsList.innerHTML = result.reasons.map(r =>
+        `<div class="finding-item">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--danger)" stroke-width="2" style="flex-shrink: 0; margin-top: 2px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <span>${escapeHTML(r)}</span>
+        </div>`
+      ).join('');
     } else {
-      renderDefaultSafeState();
+      findingsList.innerHTML = '<div class="finding-empty">No suspicious activity detected.</div>';
     }
   }
 });

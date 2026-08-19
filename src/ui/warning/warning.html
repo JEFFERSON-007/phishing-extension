@@ -3,61 +3,60 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Security Alert — Access Blocked</title>
+  <title>Blocked — Phishing Detector</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="warning.css">
 </head>
 <body>
-  <!-- Animated Hazard Background -->
-  <div class="hazard-bg"></div>
-  <div class="particles-overlay"></div>
-
-  <div class="warning-wrapper">
-    <div class="card glass-effect">
-      <div class="header">
-        <div class="icon-pulse-wrapper">
-          <span class="icon">🛑</span>
+  
+  <div class="page-container">
+    <div class="block-card">
+      
+      <div class="card-header">
+        <div class="icon-wrapper">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
         </div>
-        <h1>Phishing & Scam Threat Blocked</h1>
-        <p class="subtitle">Access to this page was intercepted by Phishing Detector to protect your credentials and data.</p>
-      </div>
-
-      <div class="score-banner">
-        <div class="score-box glow-red">
-          <span class="score-val" id="score-val">0</span>
-          <span class="score-max">/100</span>
-        </div>
-        <div class="threat-meta">
-          <div class="classification" id="classification">CRITICAL THREAT</div>
-          <div class="target-url" id="target-url">http://example.com</div>
+        <div class="header-text">
+          <h1>Connection Blocked</h1>
+          <p class="subtitle">Phishing Detector prevented access to this site to protect your data.</p>
         </div>
       </div>
 
-      <div class="section">
-        <h2>Why Was This Page Blocked?</h2>
-        <div class="reasons-list" id="reasons-list">
-          <div class="reason-item">• High-risk phishing threat detected.</div>
+      <div class="details-section">
+        <div class="detail-row">
+          <span class="detail-label">Target URL</span>
+          <code class="detail-value" id="target-url">...</code>
         </div>
-      </div>
-
-      <div class="section">
-        <h2>Educational Security Advice</h2>
-        <div class="edu-box">
-          <p>Phishing sites frequently disguise themselves as popular banks, social media platforms, or email providers to steal passwords and credit card numbers.</p>
-          <ul>
-            <li>Check the address bar carefully for lookalike letters (e.g. <code>rn</code> vs <code>m</code> or Cyrillic characters).</li>
-            <li>Never enter passwords on non-HTTPS or raw IP address links.</li>
-          </ul>
+        <div class="detail-row">
+          <span class="detail-label">Risk Score</span>
+          <div class="score-badge">
+            <span id="score-val">0</span>
+            <span class="score-max">/100</span>
+            <span class="score-class" id="classification">Unknown</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <span class="detail-label">Detection Reason</span>
+          <div class="reason-box" id="reasons-list">
+            Loading...
+          </div>
         </div>
       </div>
 
       <div class="actions">
-        <button class="btn-back animated-gradient" id="btn-back">Go Back to Safety</button>
-        <button class="btn-export" id="btn-export">Export Diagnostic JSON</button>
-        <button class="btn-proceed" id="btn-proceed">Proceed Anyway (Unsafe)</button>
+        <button class="btn btn-primary" id="btn-back">Return to Safety</button>
+        <button class="btn btn-ghost" id="btn-proceed">Proceed Anyway</button>
       </div>
+
     </div>
   </div>
 

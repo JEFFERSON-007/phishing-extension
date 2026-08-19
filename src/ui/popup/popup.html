@@ -3,59 +3,124 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Phishing Detector Security Control</title>
+  <title>Phishing Detector</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <div class="popup-card">
-    <div class="header">
-      <div class="brand">
-        <span class="shield-icon">🛡️</span>
-        <span class="brand-title">Phishing Detector</span>
+  <div class="app-container">
+    <header class="header">
+      <div class="logo">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C12 22 20 18 20 12V5L12 2L4 5V12C4 18 12 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <span>Phishing Detector</span>
       </div>
-      <span class="version-badge">v2.0.0</span>
-    </div>
+      <div class="status-badge safe" id="header-status">
+        <span class="status-indicator"></span>
+        <span id="header-status-text">Scanning</span>
+      </div>
+    </header>
 
-    <div class="score-section">
-      <div class="gauge-circle" id="gauge-circle">
-        <span class="score-number" id="score-number">--</span>
-        <span class="score-label">RISK SCORE</span>
+    <main class="main-content">
+      <div class="score-container">
+        <div class="score-ring-wrapper">
+          <svg class="score-ring" viewBox="0 0 100 100">
+            <defs>
+              <linearGradient id="safeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#10B981" />
+                <stop offset="100%" stop-color="#047857" />
+              </linearGradient>
+              <linearGradient id="warnGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#F59E0B" />
+                <stop offset="100%" stop-color="#B45309" />
+              </linearGradient>
+              <linearGradient id="dangerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#EF4444" />
+                <stop offset="100%" stop-color="#B91C1C" />
+              </linearGradient>
+              <filter id="glow">
+                <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                <feMerge>
+                  <feMergeNode in="coloredBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <circle class="ring-bg" cx="50" cy="50" r="44"></circle>
+            <circle class="ring-progress" id="ring-progress" cx="50" cy="50" r="44"></circle>
+          </svg>
+          <div class="score-content">
+            <span class="score-value" id="score-number">0</span>
+            <span class="score-label">RISK</span>
+          </div>
+        </div>
+        <div class="url-info">
+          <span class="url-label">Analyzing</span>
+          <span class="url-text" id="current-url">...</span>
+        </div>
       </div>
-      <div class="status-title" id="status-title">Analyzing...</div>
-    </div>
 
-    <div class="breakdown-grid">
-      <div class="breakdown-item">
-        <span class="item-label">URL Threat</span>
-        <span class="item-value" id="url-status">Safe</span>
+      <div class="signals-section">
+        <h3 class="section-title">Security Signals</h3>
+        <div class="signals-grid">
+          <div class="signal-card" id="card-url">
+            <div class="signal-header">
+              <span class="signal-name">URL Analysis</span>
+              <span class="signal-status safe" id="url-status">OK</span>
+            </div>
+            <div class="signal-bar"><div class="signal-bar-fill safe" id="url-bar"></div></div>
+          </div>
+          <div class="signal-card" id="card-form">
+            <div class="signal-header">
+              <span class="signal-name">Form Activity</span>
+              <span class="signal-status safe" id="form-status">OK</span>
+            </div>
+            <div class="signal-bar"><div class="signal-bar-fill safe" id="form-bar"></div></div>
+          </div>
+          <div class="signal-card" id="card-dom">
+            <div class="signal-header">
+              <span class="signal-name">DOM Integrity</span>
+              <span class="signal-status safe" id="dom-status">OK</span>
+            </div>
+            <div class="signal-bar"><div class="signal-bar-fill safe" id="dom-bar"></div></div>
+          </div>
+          <div class="signal-card" id="card-behavior">
+            <div class="signal-header">
+              <span class="signal-name">Behavior</span>
+              <span class="signal-status safe" id="behavior-status">OK</span>
+            </div>
+            <div class="signal-bar"><div class="signal-bar-fill safe" id="behavior-bar"></div></div>
+          </div>
+        </div>
       </div>
-      <div class="breakdown-item">
-        <span class="item-label">Form Harvest</span>
-        <span class="item-value" id="form-status">Safe</span>
-      </div>
-      <div class="breakdown-item">
-        <span class="item-label">DOM Structure</span>
-        <span class="item-value" id="dom-status">Safe</span>
-      </div>
-      <div class="breakdown-item">
-        <span class="item-label">Behavior</span>
-        <span class="item-value" id="behavior-status">Safe</span>
-      </div>
-    </div>
 
-    <div class="findings-box" id="findings-box">
-      <div class="findings-header">Threat Analysis</div>
-      <div class="findings-list" id="findings-list">
-        <div class="finding-empty">No suspicious threat indicators detected on this active tab.</div>
+      <div class="findings-section" id="findings-section">
+        <h3 class="section-title">Threat Indicators</h3>
+        <div class="findings-list" id="findings-list">
+          <div class="finding-empty">No suspicious activity detected.</div>
+        </div>
       </div>
-    </div>
+    </main>
 
-    <div class="footer-actions">
-      <button class="btn-rescan" id="btn-rescan">Re-Scan Page</button>
-      <button class="btn-dashboard" id="btn-dashboard">Open Dashboard</button>
-    </div>
+    <footer class="footer">
+      <button class="btn btn-secondary" id="btn-rescan">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/>
+          <path d="M21 3v5h-5"/>
+        </svg>
+        Rescan
+      </button>
+      <button class="btn btn-primary" id="btn-dashboard">
+        Dashboard
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </footer>
   </div>
-
   <script src="popup.js"></script>
 </body>
 </html>

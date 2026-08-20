@@ -76,7 +76,7 @@ export class RiskFusionEngine {
 
     // Apply severe finding boost to prevent false negative score dilution
     if (maxSingleScore >= 80) {
-      rawScore = Math.max(rawScore, maxSingleScore * 0.85);
+      rawScore = Math.max(rawScore, 80);
     } else if (maxSingleScore >= 40 && rawScore < maxSingleScore * 0.75) {
       rawScore = maxSingleScore * 0.75;
     }

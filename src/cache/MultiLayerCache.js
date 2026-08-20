@@ -133,3 +133,24 @@ export class MultiLayerCache {
     };
   }
 }
+
+/**
+ * Singleton instance providing specific siloes for caching.
+ */
+export const GlobalCache = {
+  URLCache: new MultiLayerCache(500, 30 * 60 * 1000),     // 30 min TTL
+  DomainCache: new MultiLayerCache(2000, 60 * 60 * 1000), // 1 hour TTL
+  ResultCache: new MultiLayerCache(100, 5 * 60 * 1000),   // 5 min TTL
+  
+  clearAll() {
+    this.URLCache.clear();
+    this.DomainCache.clear();
+    this.ResultCache.clear();
+  },
+  
+  purgeExpiredAll() {
+    this.URLCache.purgeExpired();
+    this.DomainCache.purgeExpired();
+    this.ResultCache.purgeExpired();
+  }
+};

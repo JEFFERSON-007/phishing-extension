@@ -72,4 +72,8 @@ export class NetworkAnalyzer extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

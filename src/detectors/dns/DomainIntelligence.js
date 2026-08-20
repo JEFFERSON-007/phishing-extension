@@ -83,4 +83,9 @@ export class DomainIntelligence extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+    this.cache.purgeExpired();
+  }
 }

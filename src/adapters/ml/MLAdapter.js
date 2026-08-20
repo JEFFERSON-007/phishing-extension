@@ -14,82 +14,62 @@
  * @property {Record<string, number>} featureImportances - Feature attribution weights.
  */
 
-export class MLAdapter {
-  constructor() {
+export class MLAdapterBase {
+  constructor(name) {
+    this.name = name;
     this.isLoaded = false;
     this.modelPath = null;
   }
 
-  /**
-   * Return adapter / model version string.
-   * @returns {string}
-   */
-  version() {
-    return '1.0.0-stub';
-  }
+  version() { return '1.0.0-stub'; }
 
-  /**
-   * Load custom ML model weights/artefact from local URI.
-   * @param {string} modelPath 
-   * @returns {Promise<boolean>}
-   */
-  async loadModel(modelPath) {
+  async load(modelPath) {
     this.modelPath = modelPath;
-    // Stub implementation: Returns true to confirm interface contract readiness
     this.isLoaded = true;
     return true;
   }
 
-  /**
-   * Predict classification score given input feature map.
-   * @param {Record<string, *>} features - Feature vector (URL features, DOM metrics, NLP tokens).
-   * @returns {Promise<MLPrediction>}
-   */
   async predict(features) {
-    if (!features) {
-      return this._fallbackResult();
-    }
-
-    // Default Fallback Stub: Returns zero risk contribution when no ML model is attached
-    return {
-      score: 0.0,
-      confidence: 0.0,
-      predictedClass: 'benign',
-      featureImportances: {}
-    };
+    return this._fallbackResult();
   }
 
-  /**
-   * Return current model prediction confidence capability.
-   * @returns {number}
-   */
-  confidence() {
-    return this.isLoaded ? 1.0 : 0.0;
+  async unload() {
+    this.isLoaded = false;
+    this.modelPath = null;
+    return true;
   }
 
-  /**
-   * Return metadata details about the loaded model.
-   * @returns {Record<string, *>}
-   */
-  metadata() {
-    return {
-      name: 'MLAdapterStub',
-      modelPath: this.modelPath,
-      isLoaded: this.isLoaded,
-      supportedFrameworks: ['TensorFlow.js', 'ONNX Runtime Web', 'Custom JS Engine']
-    };
+  healthCheck() {
+    return { name: this.name, loaded: this.isLoaded, path: this.modelPath };
   }
 
-  /**
-   * @private
-   * @returns {MLPrediction}
-   */
   _fallbackResult() {
-    return {
-      score: 0.0,
-      confidence: 0.0,
-      predictedClass: 'unknown',
-      featureImportances: {}
-    };
+    return { score: 0.0, confidence: 0.0, predictedClass: 'benign', featureImportances: {} };
+  }
+}
+
+export class URLModel extends MLAdapterBase {
+  constructor() { super('URLModel'); }
+}
+
+export class DOMModel extends MLAdapterBase {
+  constructor() { super('DOMModel'); }
+}
+
+export class NLPModel extends MLAdapterBase {
+  constructor() { super('NLPModel'); }
+}
+
+/** Legacy MLAdapter wrapper to maintain compatibility with DetectionScheduler */
+export class MLAdapter {
+  constructor() {
+    this.urlModel = new URLModel();
+    this.domModel = new DOMModel();
+    this.nlpModel = new NLPModel();
+  }
+  
+  async predict(context) {
+    // Structural stub
+    return { score: 0.0, confidence: 0.0, predictedClass: 'benign' };
   }
 }

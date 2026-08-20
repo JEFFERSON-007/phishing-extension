@@ -112,4 +112,8 @@ export class BrandImpersonationDetector extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

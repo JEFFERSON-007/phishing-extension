@@ -88,4 +88,8 @@ export class CertificateAnalyzer extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

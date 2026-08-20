@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Phishing Detector",
+  "name": "IIPS",
   "version": "2.0.0",
   "description": "Advanced real-time phishing and scam detection with multi-layered analysis.",
   "permissions": [

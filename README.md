@@ -1,4 +1,4 @@
-# IPX
+# IIPX
 
 ## Intelligent Internet Phishing Extension
 

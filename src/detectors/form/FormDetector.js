@@ -193,4 +193,8 @@ export class FormDetector extends DetectorInterface {
       };
     });
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

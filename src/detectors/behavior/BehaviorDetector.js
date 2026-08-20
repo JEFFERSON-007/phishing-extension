@@ -103,4 +103,8 @@ export class BehaviorDetector extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

@@ -30,7 +30,7 @@
   }, true);
 
   /**
-   * Extract DOM context payload for detection engine.
+   * Fast, targeted extraction of DOM context. Avoids global node traversal.
    * @returns {Record<string, *>}
    */
   function extractDOMContext() {
@@ -41,33 +41,31 @@
         type: input.type || 'text',
         name: input.name || '',
         id: input.id || '',
-        placeholder: input.placeholder || '',
-        isHidden: input.type === 'hidden' || input.style.display === 'none' || input.style.visibility === 'hidden',
-        isOffScreen: input.offsetWidth === 0 && input.offsetHeight === 0
+        isHidden: input.type === 'hidden' || input.style.display === 'none'
       }))
     }));
 
     const iframes = Array.from(document.querySelectorAll('iframe')).map(iframe => ({
       src: iframe.src || iframe.getAttribute('src') || '',
-      width: parseInt(iframe.width || iframe.style.width || '100', 10),
-      height: parseInt(iframe.height || iframe.style.height || '100', 10),
-      isHidden: iframe.style.display === 'none' || iframe.style.visibility === 'hidden' || iframe.style.opacity === '0'
+      isHidden: iframe.style.display === 'none' || iframe.style.visibility === 'hidden'
     }));
-
-    const scripts = Array.from(document.querySelectorAll('script')).map(script => ({
-      textContent: script.textContent || ''
-    }));
-
-    const overlays = Array.from(document.querySelectorAll('div, section')).filter(node => {
-      const style = node.style || {};
-      return (style.position === 'fixed' || style.position === 'absolute') &&
-             (style.zIndex > 9999 || parseInt(style.zIndex, 10) > 9999) &&
-             (style.width === '100vw' || style.width === '100%' || style.left === '0px');
-    }).map(() => ({ isOverlay: true }));
 
     const anchors = Array.from(document.querySelectorAll('a[href]')).slice(0, 50).map(anchor => ({
-      text: (anchor.textContent || '').trim(),
+      text: (anchor.textContent || '').trim().substring(0, 100),
       href: anchor.href || ''
+    }));
+
+    // Avoid expensive querySelectorAll('div, section') for overlays
+    // Check direct children of body only for overlay heuristics
+    const overlays = Array.from(document.body ? document.body.children : []).filter(node => {
+      if (node.tagName !== 'DIV' && node.tagName !== 'SECTION') return false;
+      const style = window.getComputedStyle(node);
+      return (style.position === 'fixed' || style.position === 'absolute') &&
+             (parseInt(style.zIndex, 10) > 9999);
+    }).map(() => ({ isOverlay: true }));
+
+    const scripts = Array.from(document.scripts || []).map(script => ({
+      src: script.src || script.getAttribute('src') || ''
     }));
 
     return {
@@ -178,7 +176,10 @@
       </div>
     `;
 
-    document.body.appendChild(host);
+    const target = document.body || document.documentElement;
+    if (target) {
+      target.appendChild(host);
+    }
 
     shadow.getElementById('btn-back').addEventListener('click', () => {
       window.history.back();
@@ -195,10 +196,51 @@
     });
   }
 
+  // Debounce mechanism
+  let scanTimeout = null;
+  function triggerPageAnalysisDebounced() {
+    if (scanTimeout) clearTimeout(scanTimeout);
+    scanTimeout = setTimeout(triggerPageAnalysis, 1000);
+  }
+
   // Initial Scan at document_end
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', triggerPageAnalysis);
   } else {
     triggerPageAnalysis();
+  }
+
+  // Setup targeted MutationObserver
+  const processedNodes = new WeakSet();
+  const observer = new MutationObserver((mutations) => {
+    let shouldScan = false;
+    for (const mutation of mutations) {
+      if (mutation.type === 'childList') {
+        for (const node of mutation.addedNodes) {
+          if (node.nodeType === Node.ELEMENT_NODE && !processedNodes.has(node)) {
+            processedNodes.add(node);
+            const tag = node.tagName.toUpperCase();
+            if (tag === 'FORM' || tag === 'IFRAME' || tag === 'A') {
+              shouldScan = true;
+            } else if (node.querySelector && node.querySelector('form, iframe, a')) {
+              shouldScan = true;
+            }
+          }
+        }
+      }
+      if (shouldScan) break;
+    }
+    
+    if (shouldScan) {
+      triggerPageAnalysisDebounced();
+    }
+  });
+
+  if (document.body) {
+    observer.observe(document.body, { childList: true, subtree: true });
+  } else {
+    document.addEventListener('DOMContentLoaded', () => {
+      observer.observe(document.body, { childList: true, subtree: true });
+    });
   }
 })();

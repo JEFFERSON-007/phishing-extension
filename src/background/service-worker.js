@@ -5,7 +5,7 @@
  */
 
 import { PluginRegistry } from '../plugins/PluginRegistry.js';
-import { DetectionEngine } from '../core/engine/DetectionEngine.js';
+import { DetectionScheduler } from '../core/engine/DetectionScheduler.js';
 import { RiskFusionEngine } from '../core/fusion/RiskFusionEngine.js';
 import { ExplainableAIEngine } from '../core/explainable/ExplainableAIEngine.js';
 import { EnterprisePolicyEngine } from '../core/policy/EnterprisePolicyEngine.js';
@@ -39,7 +39,7 @@ registry.register(new BrandImpersonationDetector());
 registry.register(new NetworkAnalyzer());
 registry.register(new ReputationEngine());
 
-const engine = new DetectionEngine(registry, policyEngine, fusionEngine, explainableEngine);
+const engine = new DetectionScheduler(registry, policyEngine, fusionEngine, explainableEngine);
 
 /** Store per-tab current security status */
 const tabSecurityState = new Map();
@@ -147,6 +147,13 @@ async function incrementStats(scannedDelta, blockedDelta) {
     const stats = data.phishing_detector_stats || { sitesScanned: 0, threatsBlocked: 0 };
     stats.sitesScanned += scannedDelta;
     stats.threatsBlocked += blockedDelta;
-    await storage.set({ phishing_detector_stats: stats });
+    await storage.debouncedSet({ phishing_detector_stats: stats }, 2000);
   } catch {}
+}
+
+// 3. Suspend Listener for State Cleanup
+if (typeof chrome !== 'undefined' && chrome.runtime?.onSuspend) {
+  chrome.runtime.onSuspend.addListener(() => {
+    storage.flush();
+  });
 }

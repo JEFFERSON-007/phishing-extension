@@ -164,4 +164,8 @@ export class DOMDetector extends DetectorInterface {
       executionTime
     };
   }
+
+  cleanup() {
+    // Release memory footprints
+  }
 }

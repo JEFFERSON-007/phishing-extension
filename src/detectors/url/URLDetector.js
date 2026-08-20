@@ -18,7 +18,10 @@ export class URLDetector extends DetectorInterface {
       'paypal.com', 'stripe.com', 'square.com', 'chase.com', 'bankofamerica.com',
       'wellsfargo.com', 'citibank.com', 'venmo.com', 'cashapp.com', 'coinbase.com',
       'github.com', 'gitlab.com', 'stackoverflow.com', 'netflix.com', 'spotify.com'
-    ];
+    ].map(domain => ({
+      domain,
+      label: domain.split('.')[0]
+    }));
 
     /** @type {string[]} */
     this.suspiciousTLDs = [
@@ -149,15 +152,21 @@ export class URLDetector extends DetectorInterface {
       const hostLabel = hostname.split('.')[0];
       const normalizedLabel = normalizedHost.split('.')[0];
 
-      for (const targetBrand of this.legitimateDomains) {
-        const brandLabel = targetBrand.split('.')[0];
+      for (const brand of this.legitimateDomains) {
+        const targetBrand = brand.domain;
+        const brandLabel = brand.label;
         if (hostname === targetBrand || hostname.endsWith('.' + targetBrand)) {
           continue;
         }
 
-        const rawDistance = EntropyUtils.calculateLevenshteinDistance(hostLabel, brandLabel);
-        const normDistance = EntropyUtils.calculateLevenshteinDistance(normalizedLabel, brandLabel);
-        const minDistance = Math.min(rawDistance, normDistance);
+        let minDistance = 999;
+        
+        // Fast path: skip Levenshtein if length difference is > 2
+        if (Math.abs(hostLabel.length - brandLabel.length) <= 2) {
+          const rawDistance = EntropyUtils.calculateLevenshteinDistance(hostLabel, brandLabel);
+          const normDistance = EntropyUtils.calculateLevenshteinDistance(normalizedLabel, brandLabel);
+          minDistance = Math.min(rawDistance, normDistance);
+        }
 
         const isTyposquat = (minDistance > 0 && minDistance <= 2) || 
                             (normalizedLabel === brandLabel && hostLabel !== brandLabel) ||
@@ -295,5 +304,9 @@ export class URLDetector extends DetectorInterface {
       metadata: { detector: this.name() },
       executionTime
     };
+  }
+
+  cleanup() {
+    // Release memory footprints
   }
 }

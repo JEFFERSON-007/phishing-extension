@@ -10,6 +10,10 @@ export class ChromeStorageAdapter {
     this._fallbackStore = new Map();
     /** @type {boolean} */
     this.isChromeStorageAvailable = typeof chrome !== 'undefined' && Boolean(chrome.storage?.local);
+    /** @type {Record<string, *>} Pending writes for debouncing */
+    this._pendingWrites = {};
+    /** @type {number|null} Timer ID for debouncing */
+    this._writeTimer = null;
   }
 
   /**
@@ -88,10 +92,46 @@ export class ChromeStorageAdapter {
   }
 
   /**
+   * Set key-value pairs with debouncing to reduce disk I/O.
+   * @param {Record<string, *>} items 
+   * @param {number} delayMs 
+   */
+  async debouncedSet(items, delayMs = 1000) {
+    Object.assign(this._pendingWrites, items);
+    
+    if (this._writeTimer) {
+      clearTimeout(this._writeTimer);
+    }
+    
+    this._writeTimer = setTimeout(() => {
+      this.flush();
+    }, delayMs);
+  }
+
+  /**
+   * Immediately write all pending debounced items to storage.
+   * @returns {Promise<void>}
+   */
+  async flush() {
+    if (this._writeTimer) {
+      clearTimeout(this._writeTimer);
+      this._writeTimer = null;
+    }
+    
+    if (Object.keys(this._pendingWrites).length > 0) {
+      const itemsToSave = { ...this._pendingWrites };
+      this._pendingWrites = {};
+      await this.set(itemsToSave);
+    }
+  }
+
+  /**
    * Clear all stored extension data.
    * @returns {Promise<void>}
    */
   async clear() {
+    this._pendingWrites = {};
+    if (this._writeTimer) clearTimeout(this._writeTimer);
     if (this.isChromeStorageAvailable) {
       return new Promise((resolve) => {
         chrome.storage.local.clear(() => resolve());

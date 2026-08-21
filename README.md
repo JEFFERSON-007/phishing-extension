@@ -1,6 +1,4 @@
-# IIPX
-
-## Intelligent Internet Phishing Extension
+# IIPX — Intelligent Internet Phishing Extension
 
 Privacy-first, real-time phishing and malicious website detection for modern browsers.
 
@@ -14,70 +12,75 @@ IPX adheres to a strict set of architectural and operational principles:
 
 * **Privacy-First Protection:** Analyze locally. Warn intelligently. Protect before harm.
 * **Local Execution:** Heuristics and logic run entirely within the browser.
-* **Low Latency:** Asynchronous operations, debouncing, and aggressive caching ensure minimal impact on page load times.
+* **Low Latency:** Tiered execution, asynchronous operations, debouncing, and aggressive caching ensure minimal impact on page load times.
 * **Explainable Risk Assessment:** Risk scores are calculated based on transparent, inspectable heuristics.
-* **Manifest V3 Compliant:** Strict adherence to modern extension security models (Service Workers, CSP, no `eval()`).
-* **Modular Architecture:** Extensible design separating URL analysis, form detection, and behavioral heuristics.
+* **Manifest V3 Compliant:** Strict adherence to modern extension security models (event-driven Service Workers, CSP).
+* **Modular Architecture:** Extensible Plugin Registry separating URL analysis, form detection, and behavioral heuristics into independent, priority-tiered execution layers.
 
 ---
 
 ## Architecture
 
-IPX employs a layered detection architecture, evaluating threats both prior to network navigation and post-page load.
+IPX employs a highly optimized layered detection architecture, evaluating threats both prior to network navigation and post-page load using a `DetectionScheduler` to aggressively save memory and CPU cycles.
 
 ### Threat Detection Flow
 
 ```mermaid
 graph TD
-    A[Browser Navigation] --> B[Pre-Navigation Analysis]
-    B --> C{URL / Reputation / Domain / Brand Analysis}
-    C --> D[Risk Assessment]
-    D --> E{High/Critical Risk?}
-    E -- Yes --> F[Pre-emptively Block via Warning Page]
-    E -- No --> G[Page Loads]
-    G --> H[Post-Load Content Script]
-    H --> I{DOM / Form / Behavior Analysis}
-    I --> J[Risk Fusion Calculation]
-    J --> K{High Risk?}
-    K -- Yes --> L[Inject Shadow DOM Warning Overlay]
-    K -- No --> M[Allow Normal Browsing]
+    A[Browser Navigation] --> B[Detection Scheduler]
+    B --> C{Enterprise Policy Engine}
+    C -- Blocked --> D[Block Navigation]
+    C -- Allowed --> E[Tier 0: Fast Checks URL/Reputation]
+    E --> F{Early Exit: Critical Risk?}
+    F -- Yes --> D
+    F -- No --> G[Tier 1: DOM/Brand/Cert Checks]
+    G --> H[Tier 2: Network/Behavior Checks]
+    H --> I[Risk Fusion Engine]
+    I --> J{High Risk?}
+    J -- Yes --> K[Inject Shadow DOM Warning Overlay]
+    J -- No --> L[Allow Normal Browsing]
 ```
+
+### 1. Smart Early-Exit Detection Scheduler
+The `DetectionScheduler` replaces traditional synchronous execution by organizing detectors into tiers based on priority and performance cost. 
+* **Tier 0:** Lightweight URL parsing and reputation cache lookups.
+* **Tier 1:** Certificate validation, Brand Impersonation, and DOM node structural parsing.
+* **Tier 2:** Behavioral analysis and Network leakage checks.
+If any tier definitively classifies the page as a critical threat, the engine exits early, immediately blocking the page to save processing cycles.
+
+### 2. Event-Driven MV3 Service Worker
+Background execution is entirely event-driven. The extension relies on `onBeforeNavigate` and `onMessage` listeners. Aggressive memory monitoring ensures that if V8 heap usage exceeds 150MB, an emergency `cleanup()` broadcast is executed across all plugins to prevent the browser from terminating the extension.
+
+### 3. Lightweight Targeted Extraction
+`content-script.js` avoids expensive global DOM transversals. It utilizes a surgical, debounced `MutationObserver` paired with `WeakSet` caching to only extract newly added `FORM`, `IFRAME`, and `A` nodes, reducing layout thrashing and freezing.
+
+### 4. Multi-Layer Caching
+Calculations are cached through a `GlobalCache` implementing specific, isolated LRU silos with independent Time-To-Live (TTL) values:
+* **URLCache:** 30-minute TTL
+* **DomainCache:** 1-hour TTL
+* **ResultCache:** 5-minute TTL
 
 ---
 
-## Features & Detection Modules
+## Features & Detection Modules (Implemented)
 
-### 1. URL Analysis (Implemented)
-Operates at the pre-navigation layer to detect malicious structural patterns.
-* Unicode normalization and Punycode decoding.
-* Homograph and typosquatting detection using keyboard proximity matrices.
-* Levenshtein distance calculations against targeted brands.
-* Detection of character substitutions, raw IP hostnames, and suspicious TLDs.
-* Identification of excessive subdomains and URL shorteners.
+IPX includes 9 independent plugin detectors orchestrated by the `PluginRegistry`:
 
-### 2. Form Detection (Implemented)
-Identifies credential harvesting and sensitive-data collection attempts.
-* Detection of password fields on non-HTTPS connections.
-* External form action monitoring.
-* Identification of SSN, credit card, and government ID request fields.
-* Context-aware scoring based on the surrounding DOM environment.
+* **URLDetector:** Detects typosquatting, homographs, Punycode tricks, and suspicious TLDs using fast-path Levenshtein optimizations.
+* **FormDetector:** Identifies credential harvesting, off-screen hidden inputs, and unauthorized data collection.
+* **DOMDetector:** Analyzes structural elements for clickjacking overlays, zero-pixel iframes, and obfuscated scripts.
+* **BehaviorDetector:** Monitors hostile page interactions like clipboard hijacking, right-click disabling, and auto-submits.
+* **BrandImpersonationDetector:** Evaluates Levenshtein distances against target known enterprise brands.
+* **CertificateAnalyzer:** Validates SSL/TLS transport security and scheme usage.
+* **DomainIntelligence:** Evaluates offline domain metadata and ASN characteristics.
+* **NetworkAnalyzer:** Detects mixed content and cross-origin leakage.
+* **ReputationEngine:** Consults offline blocklists and specific threat intelligence signatures.
 
-### 3. DOM / Content Analysis (Implemented)
-Analyzes structural page elements post-load using `MutationObserver`.
-* Hidden zero-pixel iframe detection.
-* Misleading display link texts.
-* Obfuscated JavaScript indicators.
-* Detection of urgency-inducing language common in social engineering.
+---
 
-### 4. Behavior Analysis (Implemented)
-Monitors hostile or suspicious page interactions.
-* Auto-submitting forms.
-* Unauthorized clipboard read/write activity.
-* Popup window spamming.
-* Right-click context menu restrictions.
+## Risk Scoring & Fusion (Implemented)
 
-### 5. Risk Scoring & Fusion (Implemented)
-The `RiskFusionEngine` calculates a 0–100 risk score based on aggregated findings.
+The `RiskFusionEngine` calculates a 0–100 risk score based on aggregated findings. It applies base confidence weights, priority multipliers, and severity caps to prevent false negative score dilution.
 
 | Risk Score | Threat Level | Response |
 | :--- | :--- | :--- |
@@ -87,106 +90,30 @@ The `RiskFusionEngine` calculates a 0–100 risk score based on aggregated findi
 | **60 – 79** | High | Shadow DOM Warning Overlay |
 | **80 – 100**| Critical | Pre-navigation Block / Standalone Warning Page |
 
----
-
-## User Interfaces
-
-IPX provides three distinct UI surfaces for user interaction and protection.
-
-1. **Popup:** Provides quick security status, a breakdown of the current page's risk score, active threat findings, and a mechanism to force a site re-scan.
-2. **Warning Page:** A standalone, pre-navigation blocking page. Presents the user with the calculated risk level, detected findings, and an option to bypass the warning if deemed a false positive.
-3. **Warning Overlay:** An in-page UI injected post-load when high-risk DOM/Behavior elements are detected. Rendered within an isolated Shadow DOM to prevent malicious scripts from tampering with the warning.
+The `ExplainableAIEngine` translates fused scores into human-readable evidence-backed findings and recommendations.
 
 ---
 
-## Caching and Performance
+## Machine Learning Integration (Planned / Stubs Implemented)
 
-To maintain low latency, IPX utilizes:
-* A bounded LRU cache (1000 item capacity).
-* Time-to-Live (TTL) invalidation (30 minutes).
-* Memoization of expensive string-distance calculations.
-* Debounced `MutationObserver` implementations.
-* Throttled DOM traversal.
+**Note:** IPX currently utilizes classical heuristics and does not execute active Machine Learning weights.
 
----
-
-## Privacy & Security Model
-
-IPX is designed for zero telemetry by default. The core extension utilizes vanilla web technologies and enforces strict internal security boundaries:
-* **Manifest V3 Constraints:** Enforced Service Worker lifecycles and strict CSP.
-* **Shadow DOM Isolation:** Protects warning overlays from page-context CSS/JS interference.
-* **Safe DOM Construction:** Explicit prevention of `eval()` and strict input/output sanitization.
-* **Client-Side Processing:** All heuristics execute entirely within the local browser runtime.
-
----
-
-## Machine Learning Roadmap (Planned)
-
-**Note:** IPX does not currently contain active Machine Learning models. 
-
-Future phases will introduce a pluggable ML architecture allowing users or enterprise administrators to supply and integrate custom models.
-
-```mermaid
-graph LR
-    A[URL Features] --> B[URL ML Model]
-    C[DOM Features] --> D[DOM ML Model]
-    E[Page Text] --> F[NLP Model]
-    B --> G[RiskFusionEngine]
-    D --> G
-    F --> G
-    H[Heuristics & Reputation] --> G
-    G --> I[Final Risk Assessment]
-```
-
----
-
-## Project Status
-
-| Component                 | Status      |
-| ------------------------- | ----------- |
-| Manifest V3 Core          | Implemented |
-| URL Analysis              | Implemented |
-| Form Detection            | Implemented |
-| DOM Analysis              | Implemented |
-| Behavior Analysis         | Implemented |
-| Risk Scoring              | Implemented |
-| Pre-Navigation Protection | Implemented |
-| Post-Load Protection      | Implemented |
-| Shadow DOM Overlay        | Implemented |
-| Caching                   | Implemented |
-| Popup                     | Implemented |
-| Warning Page              | Implemented |
-| ML Models                 | Planned     |
-| ML Integration            | Planned     |
-| Advanced Reputation       | Planned     |
-| Visual Analysis           | Planned     |
-| OCR                       | Planned     |
-
----
-
-## Development Roadmap
-
-* **Phase 1:** Core heuristic engine (Current)
-* **Phase 2:** Advanced intelligence modules (Domain/Certificate/Network/Brand analysis)
-* **Phase 3:** Machine Learning integration (URL/DOM/NLP model adapters)
-* **Phase 4:** Advanced browser intelligence (Visual similarity & OCR)
-* **Phase 5:** Enterprise capabilities (Policy engine, threat intelligence integrations)
+Structural stubs and architectural foundations are implemented via the `MLAdapter`. Future phases will inject `.tflite` or ONNX web models into these slots. The `RiskFusionEngine` is already wired to accept, weight, and fuse `URLModel`, `DOMModel`, and `NLPModel` inferences into the final risk assessment.
 
 ---
 
 ## Project Structure
 
 * `manifest.json`: Chrome Manifest V3 configuration.
-* `background.js`: Service worker handling pre-navigation interception and orchestration.
-* `content.js`: Content script injected into pages for DOM monitoring and overlay rendering.
-* `phishing-detector.js`: Core heuristics engine containing URL, form, DOM, and behavioral analyzers.
-* `config.js`: Immutable configuration rules and thresholds.
-* `cache-manager.js`: Performance optimization layer implementing LRU and TTL strategies.
-* `utils.js`: Helper functions including cryptographic routines and string algorithms.
-* `popup.html` / `popup.js`: Extension popup UI.
-* `warning.html` / `warning.js`: Standalone pre-navigation blocking page.
-* `styles.css`: Base extension styles.
-* `warning-overlay.css`: Isolated styles for the Shadow DOM warning component.
+* `src/background/service-worker.js`: Event-driven background orchestrator.
+* `src/content/content-script.js`: MutationObserver-driven surgical DOM extractor and Shadow DOM overlay manager.
+* `src/core/`: Contains the `DetectionScheduler`, `RiskFusionEngine`, `ExplainableAIEngine`, and `EnterprisePolicyEngine`.
+* `src/detectors/`: Contains the 9 modular security detector plugins.
+* `src/plugins/`: Contains the `PluginRegistry` and `DetectorInterface` contract.
+* `src/cache/`: Contains the `MultiLayerCache` and isolated cache silos.
+* `src/adapters/`: Contains the `ChromeStorageAdapter` and `MLAdapter` stubs.
+* `src/ui/`: Contains the extension popup UI, warning pages, and configuration dashboards.
+* `src/utils/`: Cryptographic, Entropy, Punycode, and logging helper functions.
 
 ---
 
@@ -195,19 +122,14 @@ graph LR
 ### Google Chrome / Microsoft Edge / Brave
 1. Clone or download this repository.
 2. Open your browser's extensions page (`chrome://extensions/` or `edge://extensions/`).
-3. Enable **Developer mode** in the top corner.
+3. Enable **Developer mode** in the top right corner.
 4. Click **Load unpacked**.
 5. Select the IPX project directory.
 6. The IPX icon will appear in your toolbar.
 
 ---
 
-## Testing Scenarios
+## Recent Activity
 
-To verify IPX functionality, you may use the following safe, controlled scenarios:
-1. Navigate to a raw IP address (e.g., `http://192.168.1.1/login`).
-2. Visit a URL containing excessive subdomains or a highly suspicious TLD.
-3. Construct a local HTML file containing a password input field hosted on an insecure `http://` or `file://` context.
-4. Construct a local HTML file featuring an invisible iframe (`opacity: 0` or `width: 0`).
-
-*Note: IPX heuristics may correctly identify these as low/medium risks individually. A combination of factors is required to trigger a high-risk block.*
+<!--START_SECTION:activity-->
+<!--END_SECTION:activity-->

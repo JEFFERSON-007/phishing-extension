@@ -1,4 +1,4 @@
-# IPX — Intelligent Internet Phishing Extension
+# IIPX — Intelligent Internet Phishing Extension
 
 Privacy-first, real-time phishing and malicious website detection for modern browsers.
 
@@ -126,3 +126,9 @@ Structural stubs and architectural foundations are implemented via the `MLAdapte
 4. Click **Load unpacked**.
 5. Select the IPX project directory.
 6. The IPX icon will appear in your toolbar.
+---
+
+## Recent Activity
+
+<!--START_SECTION:activity-->
+<!--END_SECTION:activity-->
